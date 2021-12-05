@@ -7,7 +7,7 @@
 # url:          none
 # license:      GPLv3
 # date:         December 5th 2021
-# version:      0.02
+# version:      0.03
 # bash_version: testsed with 5.1.4(1)-release 
 # requires:     raspistill from packet python3-picamera
 # optional:     none
@@ -48,7 +48,10 @@ if ! [ -x "$(command -v hostname)" ]; then
     exit 1
 else
     HOSTNAME=$(hostname)
-    echo -e "Welcome to pestdetector on host ${HOSTNAME}"
+    # Store timestamp of the date in a variable
+    DATE_TIME_STAMP=$(date +%Y-%m-%d)
+    CLOCK_TIME_STAMP=$(date +%H-%M-%S)
+    echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}"
 fi
 
 # ------------------------------
@@ -120,7 +123,7 @@ fi
 # Check if the images directory already exists
 if [ -e ${DIRECTORY_IMAGES} ] ; then
   # If the directory for the images already exists
-   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} already exists in the local directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} already exists in the local directory.${NC}"
 else
   # If the directory for the images does not already exist => create it
   if mkdir ${DIRECTORY_IMAGES} ; then
@@ -134,7 +137,7 @@ fi
 # Check if the most_recent_image directory already exists
 if [ -e ${DIRECTORY_MOST_RECENT_IMAGE} ] ; then
   # If the directory for the most_recent_image already exists
-   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_MOST_RECENT_IMAGE} already exists in the local directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} already exists in the local directory.${NC}"
 else
   # If the directory for the most_recent_image does not already exist => create it
   if mkdir ${DIRECTORY_MOST_RECENT_IMAGE} ; then
@@ -147,7 +150,7 @@ fi
 # Check if the logs directory already exists
 if [ -e ${DIRECTORY_LOGS} ] ; then
   # If the directory for the logs already exists
-   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}"
 else
   # If the directory for the logs does not already exist => create it
   if mkdir ${DIRECTORY_LOGS} ; then
@@ -179,10 +182,10 @@ fi
 LOG_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.txt"
 
 if [[ -f "${IMAGE_FILENAME_AND_PATH}" ]] ; then
-    python3 TFLite_detection_image_modified.py --modeldir=$MODEL --graph=detect_edgetpu.tflite --labels=$LABELS --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a $LOG_FILENAME_AND_PATH
+  python3 TFLite_detection_image_modified.py --modeldir=$MODEL --graph=detect_edgetpu.tflite --labels=$LABELS --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a $LOG_FILENAME_AND_PATH
 else
-    echo "The image file ${IMAGE_FILENAME_AND_PATH} was not found."
-    exit 
+  # There should be a log file. If there is no log file, something strange happened
+  echo -e "${RED}[ERROR] The image file ${IMAGE_FILENAME_AND_PATH} was not found.${NC}" && exit 1
 fi
 
 # ----------------------------------------------------
@@ -199,20 +202,27 @@ if grep "Detected" ${LOG_FILENAME_AND_PATH} ; then
   echo -e "${GREEN}[OK] One or more objects have been deteted in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
   # Move the picture file from the directory "most_recent_image" to the directory "images" 
   if mv ${IMAGE_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
-    echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} as been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
+    echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
   else
-    echo -e "${RED}[ERROR] The attempt to move the picture ${IMAGE_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}"
-    exit 1
+    # If it is implossible to move the picture file, something strange happened
+    echo -e "${RED}[ERROR] The attempt to move the picture ${IMAGE_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" && exit 1
   fi
+  # Move the log file from the directory "most_recent_image" to the directory "images" 
   if mv ${LOG_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
-    # Move the log file from the directory "most_recent_image" to the directory "images" 
-    echo -e "${GREEN}[OK] The logfile ${LOG_FILENAME_AND_PATH} as been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
+    echo -e "${GREEN}[OK] The logfile ${LOG_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
   else
-    echo -e "${RED}[ERROR] The attempt to move the logfile ${LOG_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}"
-    exit 1
+    # If it is implossible to move the log file, something strange happened
+    echo -e "${RED}[ERROR] The attempt to move the logfile ${LOG_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" && exit 1
   fi
 else
-  echo -e "${YELLOW}[INFO] No objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
+  echo -e "${GREEN}[OK] No objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
+  # If no objects have been detected in the picture, the content of the directory "most_recent_image" is erased
+  if rm ${DIRECTORY_MOST_RECENT_IMAGE}/* ; then
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} has been emptied.${NC}"
+  else
+    # If it is implossible to erase of files inside the directory "most_recent_image"
+    echo -e "${RED}[ERROR] The attempt to erase all files inside the directory ${DIRECTORY_MOST_RECENT_IMAGE} failed.${NC}" && exit 1
+  fi
 fi
 
 # ----------------------------------------------
@@ -235,29 +245,28 @@ if [[ -f images/*.jpg ]] ; then
   # Get the sum of the bytes in the images directory and keep only the first column of the output with awk
   DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
 
-  echo -e "${YELLOW}[INFO] Files in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_NUMBER_OF_FILES}${NC}"
-  echo -e "${YELLOW}[INFO] Used Bytes in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_ACTUAL_SIZE}${NC}"   
+  echo -e "${GREEN}[OK] Files in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_NUMBER_OF_FILES}${NC}"
+  echo -e "${GREEN}[OK] Used Bytes in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_ACTUAL_SIZE}${NC}"   
 
 else
-  echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} is still empty${NC}"
+  echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} is empty.${NC}"
 fi
   
 if [[ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -lt "${DIRECTORY_IMAGES_MAX_SIZE}" ]] ; then
   echo -e "${GREEN}[OK] There is enough free storage capacity in the directory ${DIRECTORY_IMAGES}${NC}"
 else
-  echo -e "${YELLOW}[INFO] Attention: The directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is more than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes !${NC}"  
+  echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is more than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes !${NC}"  
   while [ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -gt "${DIRECTORY_IMAGES_MAX_SIZE}" ]; do 
     DIRECTORY_IMAGES_OLDEST_FILE=$(ls -t ${DIRECTORY_IMAGES} | tail -1)
     if rm ${DIRECTORY_IMAGES}/${DIRECTORY_IMAGES_OLDEST_FILE}; then
-      echo -e "${YELLOW}[INFO] Erased the file ${DIRECTORY_IMAGES_OLDEST_FILE} from ${DIRECTORY_IMAGES}${NC}"
+      echo -e "${GREEN}[OK] Erased the file ${DIRECTORY_IMAGES_OLDEST_FILE} from ${DIRECTORY_IMAGES}${NC}"
       # Fetch the new sum of the bytes in the images directory and keep only the first column of the output with awk
       DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
     else 
-      echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES}!${NC}"      
-      exit 1
+      echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES}!${NC}" && exit 1
     fi
   done
-  echo -e "${YELLOW}[INFO] Now, the directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is less than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes !${NC}" 
+  echo -e "${GREEN}[OK] Now, the directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is less than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes !${NC}" 
 fi
 
 
