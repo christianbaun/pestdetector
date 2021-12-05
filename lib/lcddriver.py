@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 sys.path.append("./lib")
 
 import i2c_lib
