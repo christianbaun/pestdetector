@@ -7,11 +7,9 @@ This repository contains scripts and material I created for my pest detector pro
 
 ## Third party components
 
-The TensorFlow Lite application is taken from here
-[https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi]
+The TensorFlow Lite application is taken from [here](https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi)
 
-The LCD driver is taken from here
-[https://github.com/ArcadiaLabs/raspberry_lcd4x20_I2C.git]
+The LCD driver is taken from [here](https://github.com/ArcadiaLabs/raspberry_lcd4x20_I2C.git)
 
 ## License
 
