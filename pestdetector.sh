@@ -17,7 +17,8 @@
 
 # Path of the directory for the images
 DIRECTORY_IMAGES="images"
-DIRECTORY_IMAGES_MAX_SIZE="1073741824"  # 1 GB max
+#IRECTORY_IMAGES_MAX_SIZE="1073741824"  # 1 GB max
+DIRECTORY_IMAGES_MAX_SIZE="5000"  # 5 MB max for testing purposes
 DIRECTORY_LOGS="logs"
 DIRECTORY_LOGS_MAX_SIZE="1048576" # 1 MB max
 
@@ -40,6 +41,7 @@ fi
 # ----------------------------------------------------
 # | Check that we have a working internet connection |
 # ----------------------------------------------------
+
 # We shall check at least 5 times
 LOOP_VARIABLE=5  
 #until LOOP_VARIABLE is greater than 0 
@@ -64,6 +66,7 @@ done
 # ----------------------------------------------------------
 # | Check if the required command line tools are available |
 # ----------------------------------------------------------
+
 # Check if the command line tool raspistill is available
 if ! [ -x "$(command -v raspistill)" ]; then
     echo -e "${RED}[ERROR] pestdetector requires the command line tool raspistill from the packet python3-picamera. Please install it.${NC}"
@@ -75,6 +78,7 @@ fi
 # --------------------------------------------------
 # | Check if the required directories/folders exit |
 # --------------------------------------------------
+
 # Check if the images directory already exists
 if [ -e ${DIRECTORY_IMAGES} ] ; then
   # If the directory for the images already exists
@@ -101,8 +105,6 @@ else
   fi
 fi
 
-
-
 # ----------------------------------------
 # | Try to make a picture with the camera|
 # ----------------------------------------
@@ -116,6 +118,37 @@ else
   echo -e "${RED}[ERROR] Unable to create the picture ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.jpg.${NC}" && exit 1
 fi
 
+# Get the sum of the bytes in the images directory and keep only the first column of the output with awk
+DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
+
+# Get the number of files in the images directory
+# -U causes ls to not sort the entries => less memory consumption
+# -b prints C-style escapes for nongraphic characters, => newlines are printed as \n
+# -a prints out all files, even hidden files 
+# -d prints out directories without attempting to list the contents of the directory
+# -1 makes sure that it's on one column 
+# 
+DIRECTORY_IMAGES_NUMBER_OF_FILES=$(ls -Ubad1 images/* | wc -l)
+
+echo -e "${YELLOW}[INFO] Files in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_NUMBER_OF_FILES}${NC}"
+echo -e "${YELLOW}[INFO] Used Bytes in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_ACTUAL_SIZE}${NC}"   
+
+if [[ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -lt "${DIRECTORY_IMAGES_MAX_SIZE}" ]] ; then
+  echo -e "${GREEN}[OK] There is enough free storage capacity in the directory ${DIRECTORY_IMAGES}${NC}"
+else
+  while [ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -gt "${DIRECTORY_IMAGES_MAX_SIZE}" ]; do 
+    echo -e "${RED}[INFO] Attention: The directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is more than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes !${NC}"  
+    DIRECTORY_IMAGES_OLDEST_FILE=$(ls -t ${DIRECTORY_IMAGES} | tail -1)
+    if rm ${DIRECTORY_IMAGES}/${DIRECTORY_IMAGES_OLDEST_FILE}; then
+      echo -e "${GREEN}[INFO] Erased the file ${DIRECTORY_IMAGES_OLDEST_FILE} from ${DIRECTORY_IMAGES}${NC}"
+      # Fetch the new sum of the bytes in the images directory and keep only the first column of the output with awk
+      DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
+    else 
+      echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES} !${NC}"      
+      exit 1
+    fi
+  done
+fi
 
 
 
