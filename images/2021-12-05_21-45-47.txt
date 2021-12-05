@@ -1,0 +1,5 @@
+/home/pi/model_2021_07_08_rat_bug_hedgehog/detect_edgetpu.tflite
+=== 1638737154 2021-12-05 21-45-54 ===
+Detected Object: bug with 73 % 
+File 'most_recent_image/2021-12-05_21-45-47.jpg' stored
+
