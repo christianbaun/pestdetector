@@ -185,9 +185,39 @@ else
     exit 
 fi
 
-# -----------------------------------------
-# | Prevent the directories from overflow |
-# -----------------------------------------
+# ----------------------------------------------------
+# | Check of one or more objects have been detected. |
+# | If there have been objects detected, move the    | 
+# | picture and the log file to the images directory |
+# ----------------------------------------------------
+
+# Check in the log file of the picture what the output of TFLite_detection_image_modified.py is
+# If one or more objects have been detected, there will be one or more lines like these:
+# Detected Object: rat with 87 %
+# The return code of grep is 0 when the search patern "Detected" is inside the log file at least one time.
+if grep "Detected" ${LOG_FILENAME_AND_PATH} ; then
+  echo -e "${GREEN}[OK] One or more objects have been deteted in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
+  # Move the picture file from the directory "most_recent_image" to the directory "images" 
+  if mv ${IMAGE_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
+    echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} as been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
+  else
+    echo -e "${RED}[ERROR] The attempt to move the picture ${IMAGE_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}"
+    exit 1
+  fi
+  if mv ${LOG_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
+    # Move the log file from the directory "most_recent_image" to the directory "images" 
+    echo -e "${GREEN}[OK] The logfile ${LOG_FILENAME_AND_PATH} as been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
+  else
+    echo -e "${RED}[ERROR] The attempt to move the logfile ${LOG_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}"
+    exit 1
+  fi
+else
+  echo -e "${YELLOW}[INFO] No objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
+fi
+
+# ----------------------------------------------
+# | Prevent the images directory from overflow |
+# ----------------------------------------------
 
 # Get the sum of the bytes in the images directory and keep only the first column of the output with awk
 DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
@@ -212,7 +242,6 @@ else
   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} is still empty${NC}"
 fi
   
-
 if [[ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -lt "${DIRECTORY_IMAGES_MAX_SIZE}" ]] ; then
   echo -e "${GREEN}[OK] There is enough free storage capacity in the directory ${DIRECTORY_IMAGES}${NC}"
 else
@@ -221,13 +250,10 @@ else
     DIRECTORY_IMAGES_OLDEST_FILE=$(ls -t ${DIRECTORY_IMAGES} | tail -1)
     if rm ${DIRECTORY_IMAGES}/${DIRECTORY_IMAGES_OLDEST_FILE}; then
       echo -e "${YELLOW}[INFO] Erased the file ${DIRECTORY_IMAGES_OLDEST_FILE} from ${DIRECTORY_IMAGES}${NC}"
-      
-      # TODO: Erase the logfile for this image too
-
       # Fetch the new sum of the bytes in the images directory and keep only the first column of the output with awk
       DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
     else 
-      echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES} !${NC}"      
+      echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES}!${NC}"      
       exit 1
     fi
   done

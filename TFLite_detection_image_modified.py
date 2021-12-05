@@ -1,6 +1,6 @@
 ######## Webcam Object Detection Using Tensorflow-trained Classifier #########
 #
-# Author: Evan Juras (>98%), some modifications by Dr. Christian Baun (<2%)
+# Author: Evan Juras (>98%), some modifications by Christian Baun (<2%)
 # License: Apache-2.0 License
 # Date: December 5th 2021
 # Description: 
