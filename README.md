@@ -13,7 +13,7 @@ The LCD driver is taken from [here](https://github.com/ArcadiaLabs/raspberry_lcd
 
 ## License
 
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) or later for my own work pestdetector.sh
-[GPLv2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) or later for the LCD driver
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) or later for my own work pestdetector.sh<br/>
+[GPLv2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) or later for the LCD driver<br/>
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) or later for the TFLite application 
 
