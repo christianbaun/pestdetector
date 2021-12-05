@@ -16,7 +16,8 @@
 # ----------------------------------------------------------------------------
 
 # Path of the directory for the images
-DIRECTORY="images"
+DIRECTORY_IMAGES="images"
+DIRECTORY_LOGS="logs"
 
 RED='\033[0;31m'          # Red color
 NC='\033[0m'              # No color
@@ -69,16 +70,33 @@ else
     echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"
 fi
 
+# --------------------------------------------------
+# | Check if the required directories/folders exit |
+# --------------------------------------------------
+
 # Check if the images directory already exists
-if [ -e ${DIRECTORY} ] ; then
-  # If the directory already exists
-   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY} already exists in the local directory.${NC}"
+if [ -e ${DIRECTORY_IMAGES} ] ; then
+  # If the directory for the images already exists
+   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} already exists in the local directory.${NC}"
 else
-  # If the directory does not already exist => create it
-  if mkdir ${DIRECTORY} ; then
-    echo -e "${GREEN}[OK] The local directory ${DIRECTORY} has been created.${NC}"
+  # If the directory for the images does not already exist => create it
+  if mkdir ${DIRECTORY_IMAGES} ; then
+    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_IMAGES} has been created.${NC}"
   else
-    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY}.${NC}" && exit 1
+    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_IMAGES}.${NC}" && exit 1
+  fi
+fi
+
+# Check if the logs directory already exists
+if [ -e ${DIRECTORY_LOGS} ] ; then
+  # If the directory for the logs already exists
+   echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}"
+else
+  # If the directory for the logs does not already exist => create it
+  if mkdir ${DIRECTORY_LOGS} ; then
+    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_LOGS} has been created.${NC}"
+  else
+    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_LOGS}.${NC}" && exit 1
   fi
 fi
 
