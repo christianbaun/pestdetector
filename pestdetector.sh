@@ -234,12 +234,11 @@ DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
 
 # Get the number of files in the images directory
 # But first, check if the images directory is not empty and contains a least a single jpg file
-if [[ -f images/*.jpg ]] ; then
-  # -U causes ls to not sort the entries => less memory consumption
-  # -b prints C-style escapes for nongraphic characters, => newlines are printed as \n
-  # -a prints out all files, even hidden files 
-  # -d prints out directories without attempting to list the contents of the directory
-  # -1 makes sure that it's on one column 
+if [[ -z "$(ls -A ${DIRECTORY_IMAGES})" ]] ; then
+  # -z string True if the string is null (an empty string)
+  # -A means list all except . and ..
+  echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} is empty.${NC}"
+else
   DIRECTORY_IMAGES_NUMBER_OF_FILES=$(ls -Ubad1 ${DIRECTORY_IMAGES}/*.jpg | wc -l)
  
   # Get the sum of the bytes in the images directory and keep only the first column of the output with awk
@@ -247,9 +246,6 @@ if [[ -f images/*.jpg ]] ; then
 
   echo -e "${GREEN}[OK] Files in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_NUMBER_OF_FILES}${NC}"
   echo -e "${GREEN}[OK] Used Bytes in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_ACTUAL_SIZE}${NC}"   
-
-else
-  echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} is empty.${NC}"
 fi
   
 if [[ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -lt "${DIRECTORY_IMAGES_MAX_SIZE}" ]] ; then
