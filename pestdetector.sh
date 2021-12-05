@@ -7,17 +7,19 @@
 # url:          none
 # license:      GPLv3
 # date:         December 5th 2021
-# version:      0.01
-# bash_version: 5.1.4(1)-release 
+# version:      0.02
+# bash_version: testsed with 5.1.4(1)-release 
 # requires:     raspistill from packet python3-picamera
 # optional:     none
-# notes:        none
+# notes:        This script has been developed on a Raspberry Pi 4 (4 GB RAM)
 # example:      ./pestdetector.sh
 # ----------------------------------------------------------------------------
 
 # Path of the directory for the images
 DIRECTORY_IMAGES="images"
+DIRECTORY_IMAGES_MAX_SIZE="1073741824"  # 1 GB max
 DIRECTORY_LOGS="logs"
+DIRECTORY_LOGS_MAX_SIZE="1048576" # 1 MB max
 
 RED='\033[0;31m'          # Red color
 NC='\033[0m'              # No color
@@ -73,7 +75,6 @@ fi
 # --------------------------------------------------
 # | Check if the required directories/folders exit |
 # --------------------------------------------------
-
 # Check if the images directory already exists
 if [ -e ${DIRECTORY_IMAGES} ] ; then
   # If the directory for the images already exists
@@ -102,9 +103,22 @@ fi
 
 
 
+# ----------------------------------------
+# | Try to make a picture with the camera|
+# ----------------------------------------
 
 # Store timestamp of the date and time in a variable
 DATE_AND_TIME_STAMP=$(date +%Y-%m-%d_%H-%M-%S)
+
+if raspistill -o ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.jpg -n ; then
+  echo -e "${GREEN}[OK] The picture ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.jpg has been created.${NC}"
+else
+  echo -e "${RED}[ERROR] Unable to create the picture ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.jpg.${NC}" && exit 1
+fi
+
+
+
+
 
 # Store timestamp of the date in a variable
 DATE_TIME_STAMP=$(date +%Y-%m-%d)
@@ -112,14 +126,7 @@ DATE_TIME_STAMP=$(date +%Y-%m-%d)
 # Filename of the log file
 LOG_FILENAME="${DATE_TIME_STAMP}_results.txt"
 
-echo "${LOG_FILENAME}"
 
-
-echo "$DATE_AND_TIME_STAMP"
-
-
-
-#raspistill -o image.jpg -n
 
 
 
