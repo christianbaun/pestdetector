@@ -7,7 +7,7 @@
 # url:          none
 # license:      GPLv3
 # date:         December 5th 2021
-# version:      0.03
+# version:      0.04
 # bash_version: testsed with 5.1.4(1)-release 
 # requires:     raspistill from packet python3-picamera
 # optional:     none
@@ -34,6 +34,7 @@ fi
 MODEL="/home/pi/$MODELLNAME"
 LABELS="/home/pi/$MODELLNAME/labelmap.txt"
 
+LCD_DRIVER="lcd_output.py"
 
 RED='\033[0;31m'          # Red color
 NC='\033[0m'              # No color
@@ -110,10 +111,18 @@ done
 
 # Check if the command line tool raspistill is available
 if ! [ -x "$(command -v raspistill)" ]; then
-    echo -e "${RED}[ERROR] pestdetector requires the command line tool raspistill from the packet python3-picamera. Please install it.${NC}"
-    exit 1
+  echo -e "${RED}[ERROR] pestdetector requires the command line tool raspistill from the packet python3-picamera. Please install it.${NC}" && exit 1
 else
-    echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"
+  echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"
+fi
+
+# Check if the LCD "driver" (just a command line tool tool to print lines on the LCD) is available
+if ! [ -f "${LCD_DRIVER}" ]; then
+   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} is missing.${NC}" && exit 1
+else
+  if ! python3 ${LCD_DRIVER} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} does not operate properly.${NC}" && exit 1
+  fi
 fi
 
 # --------------------------------------------------
@@ -165,7 +174,9 @@ fi
 # ----------------------------------------
 
 # Store timestamp of the date and time in a variable
-DATE_AND_TIME_STAMP=$(date +%Y-%m-%d_%H-%M-%S)
+DATE_TIME_STAMP=$(date +%Y-%m-%d)
+CLOCK_TIME_STAMP=$(date +%H-%M-%S)
+DATE_AND_TIME_STAMP="${DATE_TIME_STAMP}-${CLOCK_TIME_STAMP}"
 IMAGE_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.jpg"
 
 if raspistill -o ${IMAGE_FILENAME_AND_PATH} -n ; then
@@ -194,11 +205,14 @@ fi
 # | picture and the log file to the images directory |
 # ----------------------------------------------------
 
+HIT=0
+
 # Check in the log file of the picture what the output of TFLite_detection_image_modified.py is
 # If one or more objects have been detected, there will be one or more lines like these:
 # Detected Object: rat with 87 %
 # The return code of grep is 0 when the search patern "Detected" is inside the log file at least one time.
 if grep "Detected" ${LOG_FILENAME_AND_PATH} ; then
+  HIT=1
   echo -e "${GREEN}[OK] One or more objects have been deteted in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
   # Move the picture file from the directory "most_recent_image" to the directory "images" 
   if mv ${IMAGE_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
@@ -215,6 +229,7 @@ if grep "Detected" ${LOG_FILENAME_AND_PATH} ; then
     echo -e "${RED}[ERROR] The attempt to move the logfile ${LOG_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" && exit 1
   fi
 else
+  HIT=0
   echo -e "${GREEN}[OK] No objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
   # If no objects have been detected in the picture, the content of the directory "most_recent_image" is erased
   if rm ${DIRECTORY_MOST_RECENT_IMAGE}/* ; then
@@ -222,6 +237,12 @@ else
   else
     # If it is implossible to erase of files inside the directory "most_recent_image"
     echo -e "${RED}[ERROR] The attempt to erase all files inside the directory ${DIRECTORY_MOST_RECENT_IMAGE} failed.${NC}" && exit 1
+  fi
+fi
+
+if [ "$HIT" -eq 1 ] ; then
+  if ! python3 ${LCD_DRIVER} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP}" "Object(s) detected" "..." "..." ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} does not operate properly.${NC}" && exit 1
   fi
 fi
 
