@@ -204,6 +204,7 @@ NUMBER_OF_RUNS=0
 
 # Inifinite loop
 while true ; do
+  # Increment the number of program runs + 1 by using the command line tool bc
   NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc)
   TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S)
   echo -e "${TIMESTAMP} ${GREEN}[OK] ===> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}"
