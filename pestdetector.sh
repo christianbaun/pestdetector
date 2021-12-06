@@ -2,16 +2,19 @@
 #
 # title:        pestdetector.sh
 # description:  This script creates images and detects rats and other forms of 
-#               pest
+#               pest like cockroaches
 # author:       Dr. Christian Baun
-# url:          none
+# url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 5th 2021
-# version:      0.04
-# bash_version: testsed with 5.1.4(1)-release 
-# requires:     raspistill from packet python3-picamera
+# date:         December 6th 2021
+# version:      0.05
+# bash_version: tested with 5.1.4(1)-release
+# requires:     raspistill command line tool from packet python3-picamera
 # optional:     none
-# notes:        This script has been developed on a Raspberry Pi 4 (4 GB RAM)
+# notes:        This script has been developed to run on a Raspberry Pi 4 
+#               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 
+#               connected via the I2C interface is used to inform about the
+#               work of the pest detector.
 # example:      ./pestdetector.sh
 # ----------------------------------------------------------------------------
 
@@ -240,8 +243,62 @@ else
   fi
 fi
 
+# ----------------------------------------------------
+# | If one or more objects have been detected, print |
+# | the results on the LCD screen                    |
+# ----------------------------------------------------
+
 if [ "$HIT" -eq 1 ] ; then
-  if ! python3 ${LCD_DRIVER} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP}" "Object(s) detected" "..." "..." ; then
+  # Count in the log file of the picture the number of lines that that contain "Detected"
+  NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED=$(grep -c Detected ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt) 
+  # If there is just a single line that contain "Detected"...
+  if [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -eq 1 ] ; then
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE1_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 1 | sed 's/Detected Object: //' )
+    LINE2_DETECTED="..."
+    LINE3_DETECTED="..."
+    LINE4_DETECTED="..."
+  # If two lines contain "Detected" => the number of detected objects is equal 2...
+  elif [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -eq 2 ] ; then  
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE1_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 1 | sed 's/Detected Object: //' )
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first two lines 
+    # and keep just the last one, which is the second from top.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE2_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 2 | tail -n 1 | sed 's/Detected Object: //' )
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first three lines 
+    # and keep just the last one, which is the third from top.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE3_DETECTED="..."
+    LINE4_DETECTED="..."
+  # If three or more lines contain "Detected" => the number of detected objects is greater or equal 3...
+  elif [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -ge 3 ] ; then  
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE1_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 1 | sed 's/Detected Object: //' )
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first two lines 
+    # and keep just the last one, which is the second from top.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE2_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 2 | tail -n 1 | sed 's/Detected Object: //' )
+    # Fetch from the log file of the picture all lines that contain "Detected" and take the first three lines 
+    # and keep just the last one, which is the third from top.
+    # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
+    LINE3_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 3 | tail -n 1 | sed 's/Detected Object: //' )
+    LINE4_DETECTED="..."
+  else
+    # If the object detection resulted in a hit, the log file should contain at least a single
+    # line with contains "Detected". If not, something strange happened
+    LINE1_DETECTED="..."
+    LINE2_DETECTED="..."
+    LINE3_DETECTED="..."
+    LINE4_DETECTED="..."
+  fi
+  # Now, try to print the results of the object detection on the LCD screen
+  # And have colons insted of dashes in the variable CLOCK_TIME_STAMP
+  CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
+  if ! python3 ${LCD_DRIVER} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} does not operate properly.${NC}" && exit 1
   fi
 fi
