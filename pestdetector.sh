@@ -7,7 +7,7 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 6th 2021
-# version:      0.07
+# version:      0.08
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               raspistill command line tool from packet python3-picamera.
@@ -146,13 +146,13 @@ fi
 # Check if the images directory already exists
 if [ -e ${DIRECTORY_IMAGES} ] ; then
   # If the directory for the images already exists
-   echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} already exists in the local directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} already exists in the directory.${NC}"
 else
   # If the directory for the images does not already exist => create it
   if mkdir ${DIRECTORY_IMAGES} ; then
-    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_IMAGES} has been created.${NC}"
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} has been created.${NC}"
   else
-    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_IMAGES}.${NC}" && exit 1
+    echo -e "${RED}[ERROR] Unable to create the directory ${DIRECTORY_IMAGES}.${NC}" && exit 1
   fi
 fi
 
@@ -160,13 +160,30 @@ fi
 # Check if the most_recent_image directory already exists
 if [ -e ${DIRECTORY_MOST_RECENT_IMAGE} ] ; then
   # If the directory for the most_recent_image already exists
-   echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} already exists in the local directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} already exists in the directory.${NC}"
 else
   # If the directory for the most_recent_image does not already exist => create it
   if mkdir ${DIRECTORY_MOST_RECENT_IMAGE} ; then
-    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_MOST_RECENT_IMAGE} has been created.${NC}"
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} has been created.${NC}"
   else
-    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" && exit 1
+    echo -e "${RED}[ERROR] Unable to create the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" && exit 1
+  fi
+fi
+
+# Check if the most_recent_image directory is empty. If it is not, erase all content
+if [[ -z "$(ls -A ${DIRECTORY_MOST_RECENT_IMAGE})" ]] ; then
+  # -z string => True (0) if the string is null (an empty string).
+  # In other words, it is Talse (1) if there are files in most_recent_image
+  # -A means list all except . and ..
+  echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} is empty.${NC}"
+else
+  # Erase the content of the directory most_recent_image.
+  # It sould be empty at the very beginning of the script.
+  # If it was not empty, maybe something went wrong with the inite loop during the last run.
+  if rm ${DIRECTORY_MOST_RECENT_IMAGE}/* ; then
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} is now empty.${NC}"
+  else
+    echo -e "${RED}[ERROR] Unable to erase the content of the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" && exit 1
   fi
 fi
 
@@ -183,39 +200,43 @@ else
   fi
 fi
 
-# ----------------------------------------
-# | Try to make a picture with the camera|
-# ----------------------------------------
 
-make_a_picture
+# Inifinite loop
+while true ; do
+  # ----------------------------------------
+  # | Try to make a picture with the camera|
+  # ----------------------------------------
 
-# -----------------------------------------
-# | Object detection and logfile creation |
-# -----------------------------------------
+  make_a_picture
 
-detect_objects
+  # -----------------------------------------
+  # | Object detection and logfile creation |
+  # -----------------------------------------
 
-# ----------------------------------------------------
-# | Check of one or more objects have been detected. |
-# | If there have been objects detected, move the    | 
-# | picture and the log file to the images directory |
-# ----------------------------------------------------
+  detect_objects
 
-check_if_objects_have_been_deteted
+  # ----------------------------------------------------
+  # | Check of one or more objects have been detected. |
+  # | If there have been objects detected, move the    | 
+  # | picture and the log file to the images directory |
+  # ----------------------------------------------------
 
-# ----------------------------------------------------
-# | If one or more objects have been detected, print |
-# | the results on the LCD screen                    |
-# ----------------------------------------------------
+  check_if_objects_have_been_deteted
 
-if [ "$HIT" -eq 1 ] ; then
-  print_result_on_LCD 
-fi
+  # ----------------------------------------------------
+  # | If one or more objects have been detected, print |
+  # | the results on the LCD screen                    |
+  # ----------------------------------------------------
 
-# ----------------------------------------------
-# | Prevent the images directory from overflow |
-# ----------------------------------------------
+  if [ "$HIT" -eq 1 ] ; then
+    print_result_on_LCD 
+  fi
 
-prevent_directory_overflow
+  # ----------------------------------------------
+  # | Prevent the images directory from overflow |
+  # ----------------------------------------------
+
+  prevent_directory_overflow    
+done
 
 exit 0
