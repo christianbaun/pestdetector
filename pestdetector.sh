@@ -7,7 +7,7 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 6th 2021
-# version:      0.08
+# version:      0.09
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               raspistill command line tool from packet python3-picamera.
@@ -200,12 +200,17 @@ else
   fi
 fi
 
+NUMBER_OF_RUNS=0
 
 # Inifinite loop
 while true ; do
-  # ----------------------------------------
-  # | Try to make a picture with the camera|
-  # ----------------------------------------
+  NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc)
+  TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S)
+  echo -e "${TIMESTAMP} ${GREEN}[OK] ===> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}"
+ 
+  # -----------------------------------------
+  # | Try to make a picture with the camera |
+  # -----------------------------------------
 
   make_a_picture
 
@@ -237,6 +242,7 @@ while true ; do
   # ----------------------------------------------
 
   prevent_directory_overflow    
+
 done
 
 exit 0
