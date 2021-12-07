@@ -46,7 +46,7 @@ fi
 MODEL="/home/pi/$MODELLNAME"
 LABELS="/home/pi/$MODELLNAME/labelmap.txt"
 
-LCD_DRIVER="lcd_output.py"
+LCD_DRIVER1="lcd_output_display1.py"
 
 RED='\033[0;31m'          # Red color
 NC='\033[0m'              # No color
@@ -131,11 +131,11 @@ else
 fi
 
 # Check if the LCD "driver" (just a command line tool tool to print lines on the LCD) is available
-if ! [ -f "${LCD_DRIVER}" ]; then
-   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} is missing.${NC}" && exit 1
+if ! [ -f "${LCD_DRIVER1}" ]; then
+   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" && exit 1
 else
-  if ! python3 ${LCD_DRIVER} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} does not operate properly.${NC}" && exit 1
+  if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
   fi
 fi
 
