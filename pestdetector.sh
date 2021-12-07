@@ -6,8 +6,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 6th 2021
-# version:      0.09
+# date:         December 7th 2021
+# version:      0.10
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               raspistill command line tool from packet python3-picamera.
