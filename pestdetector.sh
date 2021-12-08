@@ -72,6 +72,10 @@ else
     echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}"
 fi
 
+# Definition of the logfile specification.
+# This can be attached with a pipe to echo commands.
+TEE=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-logfile.txt"
+
 # ------------------------------
 # | Check the operating system |
 # ------------------------------
@@ -215,7 +219,7 @@ NUMBER_OF_RUNS=0
 # Inifinite loop
 while true ; do
   # Increment the number of program runs + 1 by using the command line tool bc
-  NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc)
+  NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc | ${TEE})
   TIMESTAMP_OUTPUT_STYLE=$(date +%Y-%m-%d\ %H:%M:%S)
   echo -e "${GREEN}[OK] ${TIMESTAMP_OUTPUT_STYLE} ==> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}"
  
