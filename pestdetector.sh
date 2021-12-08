@@ -167,7 +167,6 @@ else
   fi
 fi
 
-
 # Check if the most_recent_image directory already exists
 if [ -e ${DIRECTORY_MOST_RECENT_IMAGE} ] ; then
   # If the directory for the most_recent_image already exists
@@ -264,8 +263,10 @@ while true ; do
   # ----------------------------------------------------------
 
   if [ "$HIT" -eq 1 ] ; then
+    # If one or more objects have been detected...
     print_result_on_LCD 
   else
+    # If no object has been detected...
     print_no_object_detected_on_LCD
   fi
 
