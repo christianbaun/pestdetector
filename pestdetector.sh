@@ -24,6 +24,7 @@
 # detect_objects()
 # check_if_objects_have_been_deteted()
 # print_result_on_LCD()
+# print_no_object_detected_on_LCD()
 # prevent_directory_overflow()
 . functionlibrary.sh
 
@@ -32,7 +33,7 @@ DIRECTORY_MOST_RECENT_IMAGE="most_recent_image"
 # Path of the directory for the picture
 DIRECTORY_IMAGES="images"
 #DIRECTORY_IMAGES_MAX_SIZE="1073741824"  # 1 GB max
-DIRECTORY_IMAGES_MAX_SIZE="5000"  # 5 MB max for testing purposes
+DIRECTORY_IMAGES_MAX_SIZE="50000"  # 50 MB max for testing purposes
 DIRECTORY_LOGS="logs"
 DIRECTORY_LOGS_MAX_SIZE="1048576" # 1 MB max
 
@@ -254,13 +255,18 @@ while true ; do
 
   check_if_objects_have_been_deteted
 
-  # ----------------------------------------------------
-  # | If one or more objects have been detected, print |
-  # | the results on the LCD screen                    |
-  # ----------------------------------------------------
+  # ----------------------------------------------------------
+  # | If one or more objects have been detected, print       |
+  # | the results on the LCD screen => print_result_on_LCD() |
+  # |                                                        |
+  # | If no objects have been detected, print the result on  | 
+  # | the LCD screen => print_no_object_detected_on_LCD()    |
+  # ----------------------------------------------------------
 
   if [ "$HIT" -eq 1 ] ; then
     print_result_on_LCD 
+  else
+    print_no_object_detected_on_LCD
   fi
 
   # ----------------------------------------------

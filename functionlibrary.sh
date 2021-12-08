@@ -28,7 +28,7 @@ function make_a_picture(){
   DATE_AND_TIME_STAMP="${DATE_TIME_STAMP}-${CLOCK_TIME_STAMP}"
   IMAGE_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.jpg"
 
-  if raspistill -o ${IMAGE_FILENAME_AND_PATH} -n ; then
+  if raspistill -o ${IMAGE_FILENAME_AND_PATH} --nopreview ; then
     echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created.${NC}"
   else
     echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH}.${NC}" && exit 1
@@ -44,7 +44,7 @@ function detect_objects(){
   LOG_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.txt"
 
   if [[ -f "${IMAGE_FILENAME_AND_PATH}" ]] ; then
-    python3 TFLite_detection_image_modified.py --modeldir=$MODEL --graph=detect_edgetpu.tflite --labels=$LABELS --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a $LOG_FILENAME_AND_PATH
+    python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect_edgetpu.tflite --labels=${LABELS} --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
   else
     # There should be a log file. If there is no log file, something strange happened
     echo -e "${RED}[ERROR] The image file ${IMAGE_FILENAME_AND_PATH} was not found.${NC}" && exit 1
@@ -145,6 +145,17 @@ function print_result_on_LCD(){
   # And have colons insted of dashes in the variable CLOCK_TIME_STAMP
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
   if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
+  fi
+} 
+
+# ------------------------------------------------------------------------
+# | If no objects have been detected, print the result on the LCD screen |
+# ------------------------------------------------------------------------
+
+function print_no_object_detected_on_LCD(){
+  CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
+  if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "No objects detected" "" "" ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
   fi
 } 
