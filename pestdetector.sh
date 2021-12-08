@@ -6,15 +6,15 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 7th 2021
-# version:      0.10
+# date:         December 8th 2021
+# version:      0.11
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               raspistill command line tool from packet python3-picamera.
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
-#               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 
-#               connected via the I2C interface is used to inform about the
+#               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 
+#               connected via the I2C interface are used to inform about the
 #               work of the pest detector.
 # example:      ./pestdetector.sh
 # ----------------------------------------------------------------------------
@@ -47,6 +47,7 @@ MODEL="/home/pi/$MODELLNAME"
 LABELS="/home/pi/$MODELLNAME/labelmap.txt"
 
 LCD_DRIVER1="lcd_output_display1.py"
+LCD_DRIVER2="lcd_output_display2.py"
 
 RED='\033[0;31m'          # Red color
 NC='\033[0m'              # No color
@@ -130,12 +131,21 @@ else
   echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"
 fi
 
-# Check if the LCD "driver" (just a command line tool tool to print lines on the LCD) is available
+# Check if the LCD "driver" for LCD display 1 (just a command line tool tool to print lines on the LCD) is available
 if ! [ -f "${LCD_DRIVER1}" ]; then
    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" && exit 1
 else
   if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
+  fi
+fi
+
+# Check if the LCD "driver" for LCD display 2 (just a command line tool tool to print lines on the LCD) is available
+if ! [ -f "${LCD_DRIVER1}" ]; then
+   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} is missing.${NC}" && exit 1
+else
+  if ! python3 ${LCD_DRIVER2} "This display informs" "about the state of" "the pestdetector" "software" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
   fi
 fi
 
@@ -206,18 +216,28 @@ NUMBER_OF_RUNS=0
 while true ; do
   # Increment the number of program runs + 1 by using the command line tool bc
   NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc)
-  TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S)
-  echo -e "${TIMESTAMP} ${GREEN}[OK] ===> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}"
+  TIMESTAMP_OUTPUT_STYLE=$(date +%Y-%m-%d\ %H:%M:%S)
+  echo -e "${GREEN}[OK] ${TIMESTAMP_OUTPUT_STYLE} ==> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}"
  
   # -----------------------------------------
   # | Try to make a picture with the camera |
   # -----------------------------------------
+
+  # Print some information on LCD display 2
+  if ! python3 ${LCD_DRIVER2} "Make a picture" "" "" "" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+  fi
 
   make_a_picture
 
   # -----------------------------------------
   # | Object detection and logfile creation |
   # -----------------------------------------
+
+  # Print some information on LCD display 2
+  if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "" "" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+  fi
 
   detect_objects
 
@@ -226,6 +246,11 @@ while true ; do
   # | If there have been objects detected, move the    | 
   # | picture and the log file to the images directory |
   # ----------------------------------------------------
+
+  # Print some information on LCD display 2
+  if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+  fi
 
   check_if_objects_have_been_deteted
 
@@ -241,6 +266,11 @@ while true ; do
   # ----------------------------------------------
   # | Prevent the images directory from overflow |
   # ----------------------------------------------
+
+  # Print some information on LCD display 2
+  if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "Organize folders" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+  fi
 
   prevent_directory_overflow    
 

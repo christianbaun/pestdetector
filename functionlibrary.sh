@@ -105,8 +105,8 @@ function print_result_on_LCD(){
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
     # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
     LINE1_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 1 | sed 's/Detected Object: //' )
-    LINE2_DETECTED="..."
-    LINE3_DETECTED="..."
+    LINE2_DETECTED=""
+    LINE3_DETECTED=""
   # If two lines contain "Detected" => the number of detected objects is equal 2...
   elif [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -eq 2 ] ; then  
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
@@ -119,7 +119,7 @@ function print_result_on_LCD(){
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first three lines 
     # and keep just the last one, which is the third from top.
     # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
-    LINE3_DETECTED="..."
+    LINE3_DETECTED=""
   # If three or more lines contain "Detected" => the number of detected objects is greater or equal 3...
   elif [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -ge 3 ] ; then  
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
@@ -133,19 +133,19 @@ function print_result_on_LCD(){
     # and keep just the last one, which is the third from top.
     # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
     LINE3_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 3 | tail -n 1 | sed 's/Detected Object: //' )
-    LINE4_DETECTED="..."
+    LINE4_DETECTED=""
   else
     # If the object detection resulted in a hit, the log file should contain at least a single
     # line with contains "Detected". If not, something strange happened
-    LINE1_DETECTED="..."
-    LINE2_DETECTED="..."
-    LINE3_DETECTED="..."
+    LINE1_DETECTED=""
+    LINE2_DETECTED=""
+    LINE3_DETECTED=""
   fi
   # Now, try to print the results of the object detection on the LCD screen
   # And have colons insted of dashes in the variable CLOCK_TIME_STAMP
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
-  if ! python3 ${LCD_DRIVER} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER} does not operate properly.${NC}" && exit 1
+  if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
   fi
 } 
 
