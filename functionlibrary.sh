@@ -5,10 +5,11 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 6th 2021
-# version:      0.01
+# date:         December 9th 2021
+# version:      0.14
 # bash_version: tested with 5.1.4(1)-release
-# requires:     raspistill command line tool from packet python3-picamera
+# requires:     libcamera-still command line tool that uses the libcamera open 
+#               source camera stack.
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 
@@ -28,7 +29,14 @@ function make_a_picture(){
   DATE_AND_TIME_STAMP="${DATE_TIME_STAMP}-${CLOCK_TIME_STAMP}"
   IMAGE_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.jpg"
 
-  if raspistill -o ${IMAGE_FILENAME_AND_PATH} --nopreview ; then
+  # We use the new libcamera tools and not the legacy raspistill tool
+  # The old command to make a picture was:
+  # raspistill -n -o ${IMAGE_FILENAME_AND_PATH}
+  # The new libcamera-still tool works in a similar way.
+  # The parameters are:
+  # -n = no preview window
+  # -t n: timeout in milliseconds. -t 1 says: make the picture as fast a possible
+  if libcamera-still -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/libcamera-still_output ; then
     echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created.${NC}"
   else
     echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH}.${NC}" && exit 1

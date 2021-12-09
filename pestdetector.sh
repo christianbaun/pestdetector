@@ -7,10 +7,11 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 9th 2021
-# version:      0.12
+# version:      0.14
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
-#               raspistill command line tool from packet python3-picamera.
+#               libcamera-still command line tool that uses the libcamera open 
+#               source camera stack.
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 
@@ -129,11 +130,11 @@ done
 # | Check if the required command line tools are available |
 # ----------------------------------------------------------
 
-# Check if the command line tool raspistill is available
-if ! [ -x "$(command -v raspistill)" ]; then
-  echo -e "${RED}[ERROR] pestdetector requires the command line tool raspistill from the packet python3-picamera. Please install it.${NC}" && exit 1
+# Check if the command line tool rasplibcamera-stillistill is available
+if ! [ -x "$(command -v libcamera-still)" ]; then
+  echo -e "${RED}[ERROR] pestdetector requires the command line tool libcamera-still. Please install it.${NC}" && exit 1
 else
-  echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"
+  echo -e "${GREEN}[OK] The tool libcamera-still has been found on this system.${NC}"
 fi
 
 # Check if the LCD "driver" for LCD display 1 (just a command line tool tool to print lines on the LCD) is available
