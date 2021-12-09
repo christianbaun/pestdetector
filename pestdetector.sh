@@ -6,8 +6,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 8th 2021
-# version:      0.11
+# date:         December 9th 2021
+# version:      0.12
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               raspistill command line tool from packet python3-picamera.
@@ -29,7 +29,7 @@
 . functionlibrary.sh
 
 # Path of the directory for the most recent picture
-DIRECTORY_MOST_RECENT_IMAGE="most_recent_image"
+DIRECTORY_MOST_RECENT_IMAGE="/dev/shm/most_recent_image"
 # Path of the directory for the picture
 DIRECTORY_IMAGES="images"
 #DIRECTORY_IMAGES_MAX_SIZE="1073741824"  # 1 GB max
@@ -73,7 +73,7 @@ else
 fi
 
 # Definition of the logfile specification.
-# This can be attached with a pipe to echo commands.
+# This can be attached with a pipe to echo commands
 TEE=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-logfile.txt"
 
 # ------------------------------
