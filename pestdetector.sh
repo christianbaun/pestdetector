@@ -62,16 +62,29 @@ WHITE='\033[0;37m'        # White color
 # At the very beginning, no objects have been detected
 HIT=0
 
+# Check if the logs directory already exists
+if [ -e ${DIRECTORY_LOGS} ] ; then
+  # If the directory for the logs already exists
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}" | ${TEE_PROGRAM_LOG}
+else
+  # If the directory for the logs does not already exist => create it
+  if mkdir ${DIRECTORY_LOGS} ; then
+    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_LOGS} has been created.${NC}" | ${TEE_PROGRAM_LOG}
+  else
+    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_LOGS}.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  fi
+fi
+
 # Check if the required command line tools are available
 if ! [ -x "$(command -v hostname)" ]; then
-    echo -e "${RED}[ERROR] The command line tool hostname tool is missing.${NC}"
+    echo -e "${RED}[ERROR] The command line tool hostname tool is missing.${NC}" | ${TEE_PROGRAM_LOG} 
     exit 1
 else
     HOSTNAME=$(hostname)
     # Store timestamp of the date in a variable
     DATE_TIME_STAMP=$(date +%Y-%m-%d)
     CLOCK_TIME_STAMP=$(date +%H-%M-%S)
-    echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}"
+    echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}" | ${TEE_PROGRAM_LOG} 
 fi
 
 # Definition of the logfile specification.
@@ -85,22 +98,22 @@ TEE_OBJECTS_DETECTED=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-detected_obje
 
 if [[ "$OSTYPE" == "linux-gnu" || "$OSTYPE" == "linux-gnueabihf" ]]; then
     # Linux
-    echo -e "${YELLOW}[INFO] The operating system is Linux: ${OSTYPE}${NC}"
+    echo -e "${YELLOW}[INFO] The operating system is Linux: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
     # FreeBSD
-    echo -e "${YELLOW}[INFO] The operating system is FreeBSD: ${OSTYPE}${NC}"
+    echo -e "${YELLOW}[INFO] The operating system is FreeBSD: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # Mac OS X
-    echo -e "${YELLOW}[INFO] The operating system is Mac OS X: ${OSTYPE}${NC}"
+    echo -e "${YELLOW}[INFO] The operating system is Mac OS X: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "msys" ]]; then
     # Windows 
-    echo -e "${YELLOW}[INFO] The operating system is Windows: ${OSTYPE}${NC}"
+    echo -e "${YELLOW}[INFO] The operating system is Windows: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
     # POSIX compatibility layer for Windows
-    echo -e "${YELLOW}[INFO] POSIX compatibility layer for Windows detected: ${OSTYPE}${NC}"
+    echo -e "${YELLOW}[INFO] POSIX compatibility layer for Windows detected: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
 else
     # Unknown
-    echo -e "${YELLOW}[INFO] The operating system is unknown: ${OSTYPE}${NC}"
+    echo -e "${YELLOW}[INFO] The operating system is unknown: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
 fi
 
 # ----------------------------------------------------
@@ -113,15 +126,15 @@ LOOP_VARIABLE=5
 while [ $LOOP_VARIABLE -gt "0" ]; do 
   # Check if we have a working network connection by sending a ping to 8.8.8.8
   if ping -q -c 1 -W 1 8.8.8.8 >/dev/null ; then
-    echo -e "${GREEN}[OK] This computer has a working internet connection.${NC}"
+    echo -e "${GREEN}[OK] This computer has a working internet connection.${NC}" | ${TEE_PROGRAM_LOG} 
     # Skip entire rest of loop.
     break
   else
-    echo -e "${YELLOW}[INFO] The internet connection is not working now. Will check again.${NC}"
+    echo -e "${YELLOW}[INFO] The internet connection is not working now. Will check again.${NC}" | ${TEE_PROGRAM_LOG} 
     # Decrement variable
     LOOP_VARIABLE=$((LOOP_VARIABLE-1))
     if [ "$LOOP_VARIABLE" -eq 0 ] ; then
-      echo -e "${RED}[INFO] This computer has no working internet connection.${NC}"
+      echo -e "${RED}[INFO] This computer has no working internet connection.${NC}" | ${TEE_PROGRAM_LOG} 
     fi
     # Wait a moment. 
     sleep 1
@@ -137,12 +150,12 @@ TRY_LEGACY_RASPISTILL=0
 
 # Check if the command line tool libcamera-still is available
 if [ -x "$(command -v libcamera-still)" ]; then
-  echo -e "${GREEN}[OK] The tool libcamera-still has been found on this system.${NC}"
+  echo -e "${GREEN}[OK] The tool libcamera-still has been found on this system.${NC}" | ${TEE_PROGRAM_LOG} 
   libcamera-still &> /dev/null
   if [ $? -eq 0 ] ; then
-    echo -e "${GREEN}[OK] The tool libcamera-still appears to work well.${NC}"
+    echo -e "${GREEN}[OK] The tool libcamera-still appears to work well.${NC}" | ${TEE_PROGRAM_LOG} 
   else
-    echo -e "${YELLOW}[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.${NC}"
+    echo -e "${YELLOW}[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.${NC}" | ${TEE_PROGRAM_LOG} 
     # We need to try raspistill...
     TRY_LEGACY_RASPISTILL=1
   fi
@@ -152,19 +165,19 @@ fi
 if [[ ${TRY_LEGACY_RASPISTILL} -eq 1 ]]; then 
   # Check if the legacy command line tool raspistill is available
   if [ -x "$(command -v raspistill)" ] ; then
-    echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"    
-    echo -e "${YELLOW}[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.${NC}"    
+    echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.${NC}" | ${TEE_PROGRAM_LOG}   
   else
-    echo -e "${RED}[ERROR] pestdetector requires either the command line tool libcamera-still or raspistill.${NC}" && exit 1
+    echo -e "${RED}[ERROR] pestdetector requires either the command line tool libcamera-still or raspistill.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
 
 # Check if the LCD "driver" for LCD display 1 (just a command line tool tool to print lines on the LCD) is available
 if ! [ -f "${LCD_DRIVER1}" ] ; then
-   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" && exit 1
+   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
 else
   if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
 
@@ -173,7 +186,7 @@ if ! [ -f "${LCD_DRIVER1}" ]; then
    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} is missing.${NC}" && exit 1
 else
   if ! python3 ${LCD_DRIVER2} "This display informs" "about the state of" "the pestdetector" "software" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
 
@@ -184,26 +197,26 @@ fi
 # Check if the images directory already exists
 if [ -e ${DIRECTORY_IMAGES} ] ; then
   # If the directory for the images already exists
-   echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} already exists in the directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} already exists in the directory.${NC}" | ${TEE_PROGRAM_LOG}
 else
   # If the directory for the images does not already exist => create it
   if mkdir ${DIRECTORY_IMAGES} ; then
-    echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} has been created.${NC}"
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} has been created.${NC}" | ${TEE_PROGRAM_LOG}
   else
-    echo -e "${RED}[ERROR] Unable to create the directory ${DIRECTORY_IMAGES}.${NC}" && exit 1
+    echo -e "${RED}[ERROR] Unable to create the directory ${DIRECTORY_IMAGES}.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
 
 # Check if the most_recent_image directory already exists
 if [ -e ${DIRECTORY_MOST_RECENT_IMAGE} ] ; then
   # If the directory for the most_recent_image already exists
-   echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} already exists in the directory.${NC}"
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} already exists in the directory.${NC}" | ${TEE_PROGRAM_LOG}
 else
   # If the directory for the most_recent_image does not already exist => create it
   if mkdir ${DIRECTORY_MOST_RECENT_IMAGE} ; then
-    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} has been created.${NC}"
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} has been created.${NC}" | ${TEE_PROGRAM_LOG}
   else
-    echo -e "${RED}[ERROR] Unable to create the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" && exit 1
+    echo -e "${RED}[ERROR] Unable to create the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
 
@@ -212,28 +225,15 @@ if [[ -z "$(ls -A ${DIRECTORY_MOST_RECENT_IMAGE})" ]] ; then
   # -z string => True (0) if the string is null (an empty string).
   # In other words, it is Talse (1) if there are files in most_recent_image
   # -A means list all except . and ..
-  echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} is empty.${NC}"
+  echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} is empty.${NC}" | ${TEE_PROGRAM_LOG}
 else
   # Erase the content of the directory most_recent_image.
   # It sould be empty at the very beginning of the script.
   # If it was not empty, maybe something went wrong with the inite loop during the last run.
   if rm ${DIRECTORY_MOST_RECENT_IMAGE}/* ; then
-    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} is now empty.${NC}"
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} is now empty.${NC}" | ${TEE_PROGRAM_LOG}
   else
-    echo -e "${RED}[ERROR] Unable to erase the content of the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" && exit 1
-  fi
-fi
-
-# Check if the logs directory already exists
-if [ -e ${DIRECTORY_LOGS} ] ; then
-  # If the directory for the logs already exists
-   echo -e "${GREEN}[OK] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}"
-else
-  # If the directory for the logs does not already exist => create it
-  if mkdir ${DIRECTORY_LOGS} ; then
-    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_LOGS} has been created.${NC}"
-  else
-    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_LOGS}.${NC}" && exit 1
+    echo -e "${RED}[ERROR] Unable to erase the content of the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
 
@@ -242,9 +242,9 @@ NUMBER_OF_RUNS=0
 # Inifinite loop
 while true ; do
   # Increment the number of program runs + 1 by using the command line tool bc
-  NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc | ${TEE})
+  NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc)
   TIMESTAMP_OUTPUT_STYLE=$(date +%Y-%m-%d\ %H:%M:%S)
-  echo -e "${GREEN}[OK] ${TIMESTAMP_OUTPUT_STYLE} ==> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}"
+  echo -e "${GREEN}[OK] ${TIMESTAMP_OUTPUT_STYLE} ==> Start of program run ${NUMBER_OF_RUNS} <=== ${NC}" | ${TEE_PROGRAM_LOG}
  
   # -----------------------------------------
   # | Try to make a picture with the camera |
@@ -252,7 +252,7 @@ while true ; do
 
   # Print some information on LCD display 2
   if ! python3 ${LCD_DRIVER2} "Make a picture" "" "" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 
   make_a_picture
@@ -263,7 +263,7 @@ while true ; do
 
   # Print some information on LCD display 2
   if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 
   detect_objects
@@ -276,7 +276,7 @@ while true ; do
 
   # Print some information on LCD display 2
   if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 
   check_if_objects_have_been_deteted
@@ -303,7 +303,7 @@ while true ; do
 
   # Print some information on LCD display 2
   if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "Organize folders" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 
   prevent_directory_overflow    

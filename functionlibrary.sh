@@ -38,16 +38,16 @@ function make_a_picture(){
   # If libcamera-still is present and working, we will use it...
   if [[ ${TRY_LEGACY_RASPISTILL} -eq 0 ]]; then 
     if libcamera-still -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/libcamera-still_output ; then
-      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with libcamera-still.${NC}"
+      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with libcamera-still.${NC}" | ${TEE_PROGRAM_LOG}
     else
-      echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with libcamera-still.${NC}" && exit 1
+      echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with libcamera-still.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi 
   # If libcamera-still is not present and working, we will try using raspistill instead...
   else
     if raspistill -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/raspistill_output ; then
-      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with raspistill.${NC}"
+      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with raspistill.${NC}" | ${TEE_PROGRAM_LOG}
     else
-      echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with raspistill.${NC}" && exit 1
+      echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with raspistill.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
 }
@@ -64,7 +64,7 @@ function detect_objects(){
     python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect_edgetpu.tflite --labels=${LABELS} --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
   else
     # There should be a log file. If there is no log file, something strange happened
-    echo -e "${RED}[ERROR] The image file ${IMAGE_FILENAME_AND_PATH} was not found.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The image file ${IMAGE_FILENAME_AND_PATH} was not found.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 }
 
@@ -81,30 +81,30 @@ function check_if_objects_have_been_deteted(){
   # The return code of grep is 0 when the search patern "Detected" is inside the log file at least one time.
   if grep "Detected" ${LOG_FILENAME_AND_PATH} ; then
     HIT=1
-    echo -e "${GREEN}[OK] One or more objects have been deteted in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
+    echo -e "${GREEN}[OK] One or more objects have been deteted in the picture ${LOG_FILENAME_AND_PATH}.${NC}" | ${TEE_PROGRAM_LOG}
     # Move the picture file from the directory "most_recent_image" to the directory "images" 
     if mv ${IMAGE_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
-      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
+      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}" | ${TEE_PROGRAM_LOG}
     else
       # If it is implossible to move the picture file, something strange happened
-      echo -e "${RED}[ERROR] The attempt to move the picture ${IMAGE_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" && exit 1
+      echo -e "${RED}[ERROR] The attempt to move the picture ${IMAGE_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
     # Move the log file from the directory "most_recent_image" to the directory "images" 
     if mv ${LOG_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
-      echo -e "${GREEN}[OK] The logfile ${LOG_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}"
+      echo -e "${GREEN}[OK] The logfile ${LOG_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}" | ${TEE_PROGRAM_LOG}
     else
       # If it is implossible to move the log file, something strange happened
-      echo -e "${RED}[ERROR] The attempt to move the logfile ${LOG_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" && exit 1
+      echo -e "${RED}[ERROR] The attempt to move the logfile ${LOG_FILENAME_AND_PATH} to the directory ${DIRECTORY_IMAGES} failed.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   else
     HIT=0
-    echo -e "${GREEN}[OK] No objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}"
+    echo -e "${GREEN}[OK] No objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}" | ${TEE_PROGRAM_LOG}
     # If no objects have been detected in the picture, the content of the directory "most_recent_image" is erased
     if rm ${DIRECTORY_MOST_RECENT_IMAGE}/* ; then
-      echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} has been emptied.${NC}"
+      echo -e "${GREEN}[OK] The directory ${DIRECTORY_MOST_RECENT_IMAGE} has been emptied.${NC}" | ${TEE_PROGRAM_LOG}
     else
       # If it is implossible to erase of files inside the directory "most_recent_image"
-      echo -e "${RED}[ERROR] The attempt to erase all files inside the directory ${DIRECTORY_MOST_RECENT_IMAGE} failed.${NC}" && exit 1
+      echo -e "${RED}[ERROR] The attempt to erase all files inside the directory ${DIRECTORY_MOST_RECENT_IMAGE} failed.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
 }
@@ -162,7 +162,7 @@ function print_result_on_LCD(){
   # And have colons insted of dashes in the variable CLOCK_TIME_STAMP
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
   if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 } 
 
@@ -173,7 +173,7 @@ function print_result_on_LCD(){
 function print_no_object_detected_on_LCD(){
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
   if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "No objects detected" "" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" && exit 1
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 } 
 
@@ -190,31 +190,31 @@ function prevent_directory_overflow(){
   if [[ -z "$(ls -A ${DIRECTORY_IMAGES})" ]] ; then
     # -z string True if the string is null (an empty string)
     # -A means list all except . and ..
-    echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} is empty.${NC}"
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_IMAGES} is empty.${NC}" | ${TEE_PROGRAM_LOG}
   else
     DIRECTORY_IMAGES_NUMBER_OF_FILES=$(ls -Ubad1 ${DIRECTORY_IMAGES}/*.jpg | wc -l)
   
     # Get the sum of the bytes in the images directory and keep only the first column of the output with awk
     DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
 
-    echo -e "${GREEN}[OK] Files in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_NUMBER_OF_FILES}${NC}"
-    echo -e "${GREEN}[OK] Used Bytes in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_ACTUAL_SIZE}${NC}"   
+    echo -e "${GREEN}[OK] Files in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_NUMBER_OF_FILES}${NC}" | ${TEE_PROGRAM_LOG}
+    echo -e "${GREEN}[OK] Used Bytes in ${DIRECTORY_IMAGES}: ${DIRECTORY_IMAGES_ACTUAL_SIZE}${NC}" | ${TEE_PROGRAM_LOG} 
   fi
     
   if [[ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -lt "${DIRECTORY_IMAGES_MAX_SIZE}" ]] ; then
-    echo -e "${GREEN}[OK] There is enough free storage capacity in the directory ${DIRECTORY_IMAGES}${NC}"
+    echo -e "${GREEN}[OK] There is enough free storage capacity in the directory ${DIRECTORY_IMAGES}${NC}" | ${TEE_PROGRAM_LOG}
   else
-    echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is more than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes.${NC}"  
+    echo -e "${YELLOW}[INFO] The directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is more than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes.${NC}" | ${TEE_PROGRAM_LOG}  
     while [ "${DIRECTORY_IMAGES_ACTUAL_SIZE}" -gt "${DIRECTORY_IMAGES_MAX_SIZE}" ]; do 
       DIRECTORY_IMAGES_OLDEST_FILE=$(ls -t ${DIRECTORY_IMAGES} | tail -1)
       if rm ${DIRECTORY_IMAGES}/${DIRECTORY_IMAGES_OLDEST_FILE}; then
-        echo -e "${GREEN}[OK] Erased the file ${DIRECTORY_IMAGES_OLDEST_FILE} from ${DIRECTORY_IMAGES}${NC}"
+        echo -e "${GREEN}[OK] Erased the file ${DIRECTORY_IMAGES_OLDEST_FILE} from ${DIRECTORY_IMAGES}${NC}" | ${TEE_PROGRAM_LOG}
         # Fetch the new sum of the bytes in the images directory and keep only the first column of the output with awk
         DIRECTORY_IMAGES_ACTUAL_SIZE=$(du -s ${DIRECTORY_IMAGES} | awk '{ print $1 }')
       else 
-        echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES}!${NC}" && exit 1
+        echo -e "${RED}[INFO] Attention: Unable to erase ${DIRECTORY_IMAGES_OLDEST_FILE} from directory ${DIRECTORY_IMAGES}!${NC}" | ${TEE_PROGRAM_LOG} && exit 1
       fi
     done
-    echo -e "${GREEN}[OK] Now, the directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is less than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes.${NC}" 
+    echo -e "${GREEN}[OK] Now, the directory ${DIRECTORY_IMAGES} consumes ${DIRECTORY_IMAGES_ACTUAL_SIZE} Bytes which is less than the permitted maximum ${DIRECTORY_IMAGES_MAX_SIZE} Bytes.${NC}" | ${TEE_PROGRAM_LOG} 
   fi
 }
