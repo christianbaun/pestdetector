@@ -4,4 +4,3 @@ TODO list for pestdetector
 * Use two log files. One for program output and one just to inform about detected objects with date and time information.
 * Telegram bot setup and interaction.
 * Increase performance. Approx. 15 seconds per program run is too long. Maybe reduce image resolution.
-  => The performance of libcamera-still from libcamera is better compared with the legacy raspistill tool
