@@ -76,7 +76,8 @@ fi
 
 # Definition of the logfile specification.
 # This can be attached with a pipe to echo commands
-TEE=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-logfile.txt"
+TEE_PROGRAM_LOG=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-pestdetector_log.txt"
+TEE_OBJECTS_DETECTED=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-detected_objects.txt"
 
 # ------------------------------
 # | Check the operating system |
@@ -134,7 +135,7 @@ done
 # If libcamera-still will not work, we will try raspistill later, but for the moment we hope it will work
 TRY_LEGACY_RASPISTILL=0
 
-# Check if the command line tool rasplibcamera-stillistill is available
+# Check if the command line tool libcamera-still is available
 if [ -x "$(command -v libcamera-still)" ]; then
   echo -e "${GREEN}[OK] The tool libcamera-still has been found on this system.${NC}"
   libcamera-still &> /dev/null
