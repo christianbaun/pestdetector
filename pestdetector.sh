@@ -6,12 +6,13 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 9th 2021
-# version:      0.14
+# date:         December 10th 2021
+# version:      0.15
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
-#               source camera stack.
+#               source camera stack. As alternative, the legacy raspistill
+#               command line tool can be used.
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 
@@ -130,15 +131,35 @@ done
 # | Check if the required command line tools are available |
 # ----------------------------------------------------------
 
+# If libcamera-still will not work, we will try raspistill later, but for the moment we hope it will work
+TRY_LEGACY_RASPISTILL=0
+
 # Check if the command line tool rasplibcamera-stillistill is available
-if ! [ -x "$(command -v libcamera-still)" ]; then
-  echo -e "${RED}[ERROR] pestdetector requires the command line tool libcamera-still. Please install it.${NC}" && exit 1
-else
+if [ -x "$(command -v libcamera-still)" ]; then
   echo -e "${GREEN}[OK] The tool libcamera-still has been found on this system.${NC}"
+  libcamera-still &> /dev/null
+  if [ $? -eq 0 ] ; then
+    echo -e "${GREEN}[OK] The tool libcamera-still appears to work well.${NC}"
+  else
+    echo -e "${YELLOW}[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.${NC}"
+    # We need to try raspistill...
+    TRY_LEGACY_RASPISTILL=1
+  fi
+fi
+
+# If libcamera-still is not present or does not work properly, we need to try legacy raspistill as fallback solution
+if [[ ${TRY_LEGACY_RASPISTILL} -eq 1 ]]; then 
+  # Check if the legacy command line tool raspistill is available
+  if [ -x "$(command -v raspistill)" ] ; then
+    echo -e "${GREEN}[OK] The tool raspistill has been found on this system.${NC}"    
+    echo -e "${YELLOW}[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.${NC}"    
+  else
+    echo -e "${RED}[ERROR] pestdetector requires either the command line tool libcamera-still or raspistill.${NC}" && exit 1
+  fi
 fi
 
 # Check if the LCD "driver" for LCD display 1 (just a command line tool tool to print lines on the LCD) is available
-if ! [ -f "${LCD_DRIVER1}" ]; then
+if ! [ -f "${LCD_DRIVER1}" ] ; then
    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" && exit 1
 else
   if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then

@@ -5,11 +5,12 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 9th 2021
-# version:      0.14
+# date:         December 10th 2021
+# version:      0.15
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
-#               source camera stack.
+#               source camera stack. As alternative, the legacy raspistill
+#               command line tool can be used.
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 
@@ -29,17 +30,25 @@ function make_a_picture(){
   DATE_AND_TIME_STAMP="${DATE_TIME_STAMP}-${CLOCK_TIME_STAMP}"
   IMAGE_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.jpg"
 
-  # We use the new libcamera tools and not the legacy raspistill tool
-  # The old command to make a picture was:
-  # raspistill -n -o ${IMAGE_FILENAME_AND_PATH}
-  # The new libcamera-still tool works in a similar way.
+  # Per default, we use the new libcamera tools and not the legacy raspistill tool
   # The parameters are:
   # -n = no preview window
   # -t n: timeout in milliseconds. -t 1 says: make the picture as fast a possible
-  if libcamera-still -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/libcamera-still_output ; then
-    echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created.${NC}"
+
+  # If libcamera-still is present and working, we will use it...
+  if [[ ${TRY_LEGACY_RASPISTILL} -eq 0 ]]; then 
+    if libcamera-still -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/libcamera-still_output ; then
+      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with libcamera-still.${NC}"
+    else
+      echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with libcamera-still.${NC}" && exit 1
+    fi 
+  # If libcamera-still is not present and working, we will try using raspistill instead...
   else
-    echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH}.${NC}" && exit 1
+    if raspistill -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/raspistill_output ; then
+      echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with raspistill.${NC}"
+    else
+      echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with raspistill.${NC}" && exit 1
+    fi
   fi
 }
 
