@@ -6,8 +6,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 10th 2021
-# version:      0.15
+# date:         December 12th 2021
+# version:      0.16
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -90,7 +90,7 @@ fi
 # Definition of the logfile specification.
 # This can be attached with a pipe to echo commands
 TEE_PROGRAM_LOG=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-pestdetector_log.txt"
-TEE_OBJECTS_DETECTED=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-detected_objects.txt"
+LOGFILE_OBJECTS_DETECTED="${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-detected_objects.txt"
 
 # ------------------------------
 # | Check the operating system |
@@ -292,6 +292,8 @@ while true ; do
   if [ "$HIT" -eq 1 ] ; then
     # If one or more objects have been detected...
     print_result_on_LCD 
+    # Write information about deteceted objects into log file
+    write_detected_objects_message_into_logfile
   else
     # If no object has been detected...
     print_no_object_detected_on_LCD

@@ -5,8 +5,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 10th 2021
-# version:      0.15
+# date:         December 12th 2021
+# version:      0.16
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. As alternative, the legacy raspistill
@@ -164,6 +164,20 @@ function print_result_on_LCD(){
   if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
+} 
+
+
+
+# -------------------------------------------------------------------
+# | If one or more objects have been detected, copy the information |
+# | about it into the log file that informs about detected objects  |
+# -------------------------------------------------------------------
+
+function write_detected_objects_message_into_logfile(){
+  # Count in the log file of the picture the number of lines that that contain "Detected"
+  echo "=======================================================================" >> ${LOGFILE_OBJECTS_DETECTED}
+  echo "${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.jpg" >> ${LOGFILE_OBJECTS_DETECTED}
+  DETECTED_OBJECTS_OF_LAST_RUN=$(grep Detected ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt >> ${LOGFILE_OBJECTS_DETECTED}) 
 } 
 
 # ------------------------------------------------------------------------
