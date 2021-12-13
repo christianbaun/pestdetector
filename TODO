@@ -1,6 +1,60 @@
 TODO list for pestdetector
 ==========================
-* Automatic startup at boot on the node.
-* Use two log files. One for program output and one just to inform about detected objects with date and time information.
 * Telegram bot setup and interaction.
 * Increase performance. Approx. 15 seconds per program run is too long. Maybe reduce image resolution.
+
+
+* Automatic startup at boot on the node.
+
+Create a systemd file
+
+$ sudo bash -c 'cat <<EOF > /lib/systemd/system/pestdetect.service
+[Unit]
+Description=Pest Detector Service
+After=multi-user.target
+
+[Service]
+Type=idle
+WorkingDirectory=/home/pi/pestdetector
+ExecStart=/home/pi/pestdetector/pestdetector.sh
+
+[Install]
+WantedBy=multi-user.target
+
+EOF'
+
+$ sudo chmod 644 /lib/systemd/system/pestdetect.service 
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable pestdetect.service 
+Created symlink /etc/systemd/system/multi-user.target.wants/pestdetect.service → /lib/systemd/system/pestdetect.service.
+
+$ sudo systemctl status pestdetect.service 
+● pestdetect.service - Pest Detector Service
+   Loaded: loaded (/lib/systemd/system/pestdetect.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2021-12-13 08:42:26 CET; 1min 5s ago
+ Main PID: 1554 (pestdetector.sh)
+    Tasks: 12 (limit: 4915)
+   CGroup: /system.slice/pestdetect.service
+           ├─1554 /bin/bash /home/pi/pestdetector/pestdetector.sh
+           ├─2292 python3 TFLite_detection_image_modified.py --modeldir=/home/pi/model_2021_07_08_rat_bug_hedgehog --graph=detect_edgetpu.tflite --labels=/home/pi/model_2021_07_08
+           └─2293 tee -a /dev/shm/most_recent_image/2021-12-13-08-43-24.txt
+
+Dez 13 08:43:22 raspberrypi pestdetector.sh[1554]: /home/pi/model_2021_07_08_rat_bug_hedgehog/detect_edgetpu.tflite
+Dez 13 08:43:22 raspberrypi pestdetector.sh[1554]: File '/dev/shm/most_recent_image/2021-12-13-08-43-14.jpg' stored
+Dez 13 08:43:22 raspberrypi pestdetector.sh[1554]: [OK] No objects have been detected in the picture /dev/shm/most_recent_image/2021-12-13-08-43-14.txt.
+Dez 13 08:43:22 raspberrypi pestdetector.sh[1554]: [OK] The directory /dev/shm/most_recent_image has been emptied.
+Dez 13 08:43:24 raspberrypi pestdetector.sh[1554]: [OK] The directory images is empty.
+Dez 13 08:43:24 raspberrypi pestdetector.sh[1554]: [OK] There is enough free storage capacity in the directory images
+Dez 13 08:43:24 raspberrypi pestdetector.sh[1554]: [OK] 2021-12-13 08:43:24 ==> Start of program run 6 <=== 
+Dez 13 08:43:27 raspberrypi pestdetector.sh[1554]: [OK] The picture /dev/shm/most_recent_image/2021-12-13-08-43-24.jpg has been created with libcamera-still.
+Dez 13 08:43:31 raspberrypi pestdetector.sh[1554]: /home/pi/model_2021_07_08_rat_bug_hedgehog/detect_edgetpu.tflite
+Dez 13 08:43:31 raspberrypi pestdetector.sh[1554]: File '/dev/shm/most_recent_image/2021-12-13-08-43-24.jpg' stored
+...
+
+
+The second option is just inserting a line into the file /etc/rc.local
+
+sudo nano /etc/rc.local
+
+Add this line (final line exit 0 !!!) 
+/home/pi/pestdetector/pestdetector.sh
