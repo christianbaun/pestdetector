@@ -7,13 +7,14 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 15th 2021
-# version:      0.18
+# version:      0.19
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. As alternative, the legacy raspistill
 #               command line tool can be used.
 #               curl command line tool for interaction with the Telegram Bot
+#               Tested with curl 7.74.0
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 

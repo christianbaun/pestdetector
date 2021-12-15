@@ -6,12 +6,13 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 15th 2021
-# version:      0.18
+# version:      0.19
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. As alternative, the legacy raspistill
 #               command line tool can be used.
 #               curl command line tool for interaction with the Telegram Bot
+#               Tested with curl 7.74.0
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 
@@ -198,7 +199,7 @@ function inform_telegram_bot(){
   # Why do I need to do this for the second time, after I did it in the function write_detected_objects_message_into_logfile() ???
   DETECTED_OBJECTS_OF_LAST_RUN=$(grep Detected ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt)
   # Inform the Telegram Bot about the detected objects
-  curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="${DETECTED_OBJECTS_OF_LAST_RUN}" --data chat_id=${TELEGRAM_CHAT_ID} > /dev/null
+  curl -s -F "chat_id=${TELEGRAM_CHAT_ID}" -F "photo=@${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.jpg" -F caption="${DETECTED_OBJECTS_OF_LAST_RUN}" -X POST ${TELEGRAM_TOKEN}/sendPhoto > /dev/null
 } 
 
 # ----------------------------------------------
