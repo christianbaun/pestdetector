@@ -81,9 +81,9 @@ function check_if_objects_have_been_deteted(){
   # If one or more objects have been detected, there will be one or more lines like these:
   # Detected Object: rat with 87 %
   # The return code of grep is 0 when the search patern "Detected" is inside the log file at least one time.
-  if grep "Detected" ${LOG_FILENAME_AND_PATH} ; then
+  if grep "Detected" ${LOG_FILENAME_AND_PATH} > /dev/null ; then
     HIT=1
-    echo -e "${GREEN}[OK] One or more objects have been deteted in the picture ${LOG_FILENAME_AND_PATH}.${NC}" | ${TEE_PROGRAM_LOG}
+    echo -e "${GREEN}[OK] One or more objects have been detected in the picture ${LOG_FILENAME_AND_PATH}.${NC}" | ${TEE_PROGRAM_LOG}
     # Move the picture file from the directory "most_recent_image" to the directory "images" 
     if mv ${IMAGE_FILENAME_AND_PATH} ${DIRECTORY_IMAGES} ; then
       echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been moved to the directory ${DIRECTORY_IMAGES}.${NC}" | ${TEE_PROGRAM_LOG}

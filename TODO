@@ -2,6 +2,8 @@ TODO list for pestdetector
 ==========================
 * Increase performance. Approx. 15 seconds per program run is too long. Maybe reduce image resolution.
 
+TBD
+
 * Telegram bot setup and interaction.
 
 Send a Text to a Telegram bot:
@@ -11,8 +13,8 @@ MESSAGE="Hallo Bot."
 TELEGRAM_TOKEN="<TOKEN-URL>"
 curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="${MESSAGE}" --data chat_id=${TELEGRAM_CHAT_ID} 
 
+Send an Image to a Telegram bot with a caption text. The image path can be relative or absolute.
 
-Send an Image to aa Telegram bot with a Caption
 TELEGRAM_CHAT_ID="<CHAT-ID>"
 MESSAGE="Hallo Bot."
 TELEGRAM_TOKEN="<TOKEN-URL>"
@@ -29,13 +31,14 @@ Description=Pest Detector Service
 After=multi-user.target
 
 [Service]
+User=pi
+Group=pi
 Type=idle
 WorkingDirectory=/home/pi/pestdetector
 ExecStart=/home/pi/pestdetector/pestdetector.sh
 
 [Install]
 WantedBy=multi-user.target
-
 EOF'
 
 $ sudo chmod 644 /lib/systemd/system/pestdetect.service 
@@ -68,6 +71,12 @@ Dez 13 08:43:31 raspberrypi pestdetector.sh[1554]: File '/dev/shm/most_recent_im
 
 $ systemctl list-units --type=service | grep pest
 pestdetect.service                                          loaded active running Pest Detector Service  
+
+When the systemd service file is changed...
+$ sudo nano /lib/systemd/system/pestdetect.servic
+the deamon need to be reloaded:
+$ sudo systemctl daemon-reload
+
 
 The second option is just inserting a line into the file /etc/rc.local
 
