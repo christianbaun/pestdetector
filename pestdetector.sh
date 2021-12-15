@@ -228,6 +228,10 @@ else
   TELEGRAM_NOTIFICATIONS=1  
 fi
 
+if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then
+  curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="Pest Detector has been started." --data chat_id=${TELEGRAM_CHAT_ID} > /dev/null
+fi       
+
 # --------------------------------------------------
 # | Check if the required directories/folders exit |
 # --------------------------------------------------
