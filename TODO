@@ -1,8 +1,23 @@
 TODO list for pestdetector
 ==========================
-* Telegram bot setup and interaction.
 * Increase performance. Approx. 15 seconds per program run is too long. Maybe reduce image resolution.
 
+* Telegram bot setup and interaction.
+
+Send a Text to a Telegram bot:
+
+TELEGRAM_CHAT_ID="<CHAT-ID>"
+MESSAGE="Hallo Bot."
+TELEGRAM_TOKEN="<TOKEN-URL>"
+curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="${MESSAGE}" --data chat_id=${TELEGRAM_CHAT_ID} 
+
+
+Send an Image to aa Telegram bot with a Caption
+TELEGRAM_CHAT_ID="<CHAT-ID>"
+MESSAGE="Hallo Bot."
+TELEGRAM_TOKEN="<TOKEN-URL>"
+IMAGE_FILE="<IMAGE-FILE-WITH-PATH>"
+curl -s -F "chat_id=${TELEGRAM_CHAT_ID}" -F "photo=@${IMAGE_FILE}" -F caption="Detected" -X POST ${TELEGRAM_TOKEN}/sendPhoto 
 
 * Automatic startup at boot on the node.
 
