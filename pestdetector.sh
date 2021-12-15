@@ -6,13 +6,14 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 12th 2021
-# version:      0.16
+# date:         December 15th 2021
+# version:      0.17
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. As alternative, the legacy raspistill
 #               command line tool can be used.
+#               curl command line tool for interaction with the Telegram Bot
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 
@@ -77,7 +78,7 @@ fi
 
 # Check if the required command line tools are available
 if ! [ -x "$(command -v hostname)" ]; then
-    echo -e "${RED}[ERROR] The command line tool hostname tool is missing.${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${RED}[ERROR] The command line tool hostname is missing.${NC}" | ${TEE_PROGRAM_LOG} 
     exit 1
 else
     HOSTNAME=$(hostname)
@@ -85,6 +86,11 @@ else
     DATE_TIME_STAMP=$(date +%Y-%m-%d)
     CLOCK_TIME_STAMP=$(date +%H-%M-%S)
     echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}" | ${TEE_PROGRAM_LOG} 
+fi
+
+if ! [ -x "$(command -v curl)" ]; then
+    echo -e "${RED}[ERROR] The command line tool curl is missing.${NC}" | ${TEE_PROGRAM_LOG} 
+    exit 1
 fi
 
 # Definition of the logfile specification.
@@ -102,15 +108,23 @@ if [[ "$OSTYPE" == "linux-gnu" || "$OSTYPE" == "linux-gnueabihf" ]]; then
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
     # FreeBSD
     echo -e "${YELLOW}[INFO] The operating system is FreeBSD: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Using the pest detector in FreeBSD was never tested.${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Please report to the developer if it worked or not.${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # Mac OS X
     echo -e "${YELLOW}[INFO] The operating system is Mac OS X: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Using the pest detector in Mac OS X was never tested.${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Please report to the developer if it worked or not.${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "msys" ]]; then
     # Windows 
     echo -e "${YELLOW}[INFO] The operating system is Windows: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Using the pest detector in Windows was never tested.${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Please report to the developer if it worked or not.${NC}" | ${TEE_PROGRAM_LOG} 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
     # POSIX compatibility layer for Windows
     echo -e "${YELLOW}[INFO] POSIX compatibility layer for Windows detected: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Using the pest detector in Windows was never tested.${NC}" | ${TEE_PROGRAM_LOG} 
+    echo -e "${YELLOW}[INFO] Please report to the developer if it worked or not.${NC}" | ${TEE_PROGRAM_LOG} 
 else
     # Unknown
     echo -e "${YELLOW}[INFO] The operating system is unknown: ${OSTYPE}${NC}" | ${TEE_PROGRAM_LOG} 
@@ -188,6 +202,30 @@ else
   if ! python3 ${LCD_DRIVER2} "This display informs" "about the state of" "the pestdetector" "software" ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
+fi
+
+# ------------------------------------------------------
+# | Check if the Telegram Bot notification is possible |
+# ------------------------------------------------------
+
+# If the file with the Telegram Bot url token und the chat ID exist, import the
+# variables $TELEGRAM_TOKEN and $TELEGRAM_CHAT_ID
+PEST_DETECT_TELEGRAM_CONFIG_FILE="/home/pi/pest_detect_telegram_credentials.sh"
+if [ -f $PEST_DETECT_TELEGRAM_CONFIG_FILE ] ; then  
+  . $PEST_DETECT_TELEGRAM_CONFIG_FILE
+  echo -e "${GREEN}[OK] The file with the Telegram Bot information is present.${NC}" | ${TEE_PROGRAM_LOG}
+else 
+  echo -e "${YELLOW}[INFO] The file with the Telegram Bot information is not present.${NC}" | ${TEE_PROGRAM_LOG}
+fi
+
+# Check if all variables that are required for the Telegram Bot notification
+# do exist and are not empty 
+if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ] ; then
+  echo -e "${YELLOW}[INFO] One or more variables that are reqiored for the Telegram Bot notifications are undefined.${NC}" | ${TEE_PROGRAM_LOG}
+  echo -e "${YELLOW}[INFO] Please set the variables \$TELEGRAM_TOKEN and \$TELEGRAM_CHAT_ID if you want using Telegram Bot notifications.${NC}" | ${TEE_PROGRAM_LOG}
+  TELEGRAM_NOTIFICATIONS=0
+else
+  TELEGRAM_NOTIFICATIONS=1  
 fi
 
 # --------------------------------------------------

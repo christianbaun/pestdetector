@@ -51,6 +51,8 @@ Dez 13 08:43:31 raspberrypi pestdetector.sh[1554]: /home/pi/model_2021_07_08_rat
 Dez 13 08:43:31 raspberrypi pestdetector.sh[1554]: File '/dev/shm/most_recent_image/2021-12-13-08-43-24.jpg' stored
 ...
 
+$ systemctl list-units --type=service | grep pest
+pestdetect.service                                          loaded active running Pest Detector Service  
 
 The second option is just inserting a line into the file /etc/rc.local
 
