@@ -7,7 +7,7 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 15th 2021
-# version:      0.17
+# version:      0.18
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -28,6 +28,7 @@
 # check_if_objects_have_been_deteted()
 # print_result_on_LCD()
 # print_no_object_detected_on_LCD()
+# inform_telegram_bot()
 # prevent_directory_overflow()
 . functionlibrary.sh
 
@@ -62,6 +63,7 @@ WHITE='\033[0;37m'        # White color
 
 # At the very beginning, no objects have been detected
 HIT=0
+DETECTED_OBJECTS_OF_LAST_RUN=""
 
 # Check if the logs directory already exists
 if [ -e ${DIRECTORY_LOGS} ] ; then
@@ -228,7 +230,7 @@ else
   TELEGRAM_NOTIFICATIONS=1  
 fi
 
-if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then
+if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then 
   curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="Pest Detector has been started." --data chat_id=${TELEGRAM_CHAT_ID} > /dev/null
 fi       
 
@@ -336,6 +338,10 @@ while true ; do
     print_result_on_LCD 
     # Write information about deteceted objects into log file
     write_detected_objects_message_into_logfile
+    if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then 
+      # Inform the Telegram Bot about the detected objects
+      inform_telegram_bot
+    fi  
   else
     # If no object has been detected...
     print_no_object_detected_on_LCD

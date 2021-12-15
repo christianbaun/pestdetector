@@ -5,12 +5,13 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 12th 2021
-# version:      0.16
+# date:         December 15th 2021
+# version:      0.18
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. As alternative, the legacy raspistill
 #               command line tool can be used.
+#               curl command line tool for interaction with the Telegram Bot
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 
@@ -166,8 +167,6 @@ function print_result_on_LCD(){
   fi
 } 
 
-
-
 # -------------------------------------------------------------------
 # | If one or more objects have been detected, copy the information |
 # | about it into the log file that informs about detected objects  |
@@ -189,6 +188,17 @@ function print_no_object_detected_on_LCD(){
   if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "No objects detected" "" "" ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
+} 
+
+# ------------------------------------------------------
+# | Inform the Telegram Bot about the detected objects |
+# ------------------------------------------------------
+
+function inform_telegram_bot(){
+  # Why do I need to do this for the second time, after I did it in the function write_detected_objects_message_into_logfile() ???
+  DETECTED_OBJECTS_OF_LAST_RUN=$(grep Detected ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt)
+  # Inform the Telegram Bot about the detected objects
+  curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="${DETECTED_OBJECTS_OF_LAST_RUN}" --data chat_id=${TELEGRAM_CHAT_ID} > /dev/null
 } 
 
 # ----------------------------------------------
