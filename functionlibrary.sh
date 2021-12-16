@@ -6,7 +6,7 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 16th 2021
-# version:      0.22
+# version:      0.23
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. 

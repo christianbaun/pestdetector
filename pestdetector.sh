@@ -7,7 +7,7 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 16th 2021
-# version:      0.22
+# version:      0.23
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -36,7 +36,7 @@
 
 function usage
 {
-echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t]
+echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>]
 
 Arguments:
 -h : show this message on screen
@@ -51,6 +51,7 @@ Arguments:
      are send when the pest detector starts and when objects are detected.  
      The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
      and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
+-d : use 0, 1 or 2 LCD displays (4x20)
 "
 
 exit 0
@@ -66,8 +67,8 @@ MODELLNAME_PARAMETER=0
 LABELMAP_PARAMETER=0
 # Path of the directory for the most recent picture
 DIRECTORY_MOST_RECENT_IMAGE="/dev/shm/most_recent_image"
-# Path of the directory for the picture
 DIRECTORY_IMAGES_PARAMETER=0
+# Path of the directory for the picture
 DIRECTORY_IMAGES=""
 STANDARD_DIRECTORY_IMAGES="images"
 DIRECTORY_IMAGES_MAX_SIZE_PARAMETER=0
@@ -77,7 +78,10 @@ DIRECTORY_LOGS_PARAMETER=0
 DIRECTORY_LOGS=""
 STANDARD_DIRECTORY_LOGS="logs"
 DIRECTORY_LOGS_MAX_SIZE="100000" # 100 MB max
+# Do not use the telegram bot notification per default
 USE_TELEGRAM_BOT=0
+# Do not use LCDdisplays 4x20 per default
+NUM_LCD_DISPLAYS=0
 
 
 LCD_DRIVER1="lcd_output_display1.py"
@@ -94,7 +98,7 @@ WHITE='\033[0;37m'        # White color
 HIT=0
 DETECTED_OBJECTS_OF_LAST_RUN=""
 
-while getopts "hm:l:i:s:j:t" ARG ; do
+while getopts "hm:l:i:s:j:td:" ARG ; do
   case $ARG in
     h) usage ;;
     m) MODELLNAME_PARAMETER=1
@@ -108,6 +112,7 @@ while getopts "hm:l:i:s:j:t" ARG ; do
     j) DIRECTORY_LOGS_PARAMETER=1
        DIRECTORY_LOGS=${OPTARG} ;;
     t) USE_TELEGRAM_BOT=1 ;;
+    d) NUM_LCD_DISPLAYS=${OPTARG} ;;
     *) echo -e "${RED}[ERROR] Invalid option! ${OPTARG} ${NC}" 
        exit 1
        ;;
@@ -203,6 +208,15 @@ if [ "$USE_TELEGRAM_BOT" -eq 1 ] ; then
   fi
 fi
 
+# Validate that the number of 4x20 LCD displays used is 0, 1 or 2
+if ! [[ "$NUM_LCD_DISPLAYS" -eq 0 || "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+  echo -e "${RED}[ERROR] The number of 4x20 LCD displays used must be 0, 1 or 2.${NC}" 
+  usage
+  exit 1
+else
+  echo -e "${GREEN}[OK] ${NUM_LCD_DISPLAYS} are used.${NC}" 
+fi
+
 # ------------------------------
 # | Check the operating system |
 # ------------------------------
@@ -291,21 +305,27 @@ if [[ ${TRY_LEGACY_RASPISTILL} -eq 1 ]]; then
   fi
 fi
 
-# Check if the LCD "driver" for LCD display 1 (just a command line tool tool to print lines on the LCD) is available
-if ! [ -f "${LCD_DRIVER1}" ] ; then
-   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
-else
-  if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+# This is only required if we use 1 or 2 LCD displays.
+if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+  # Check if the LCD "driver" for LCD display 1 (just a command line tool tool to print lines on the LCD) is available
+  if ! [ -f "${LCD_DRIVER1}" ] ; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  else
+    if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 fi
 
-# Check if the LCD "driver" for LCD display 2 (just a command line tool tool to print lines on the LCD) is available
-if ! [ -f "${LCD_DRIVER1}" ]; then
-   echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} is missing.${NC}" && exit 1
-else
-  if ! python3 ${LCD_DRIVER2} "This display informs" "about the state of" "the pestdetector" "software" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+# This is only required if we use 2 LCD displays.
+if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+  # Check if the LCD "driver" for LCD display 2 (just a command line tool tool to print lines on the LCD) is available
+  if ! [ -f "${LCD_DRIVER1}" ]; then
+    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} is missing.${NC}" && exit 1
+  else
+    if ! python3 ${LCD_DRIVER2} "This display informs" "about the state of" "the pestdetector" "software" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 fi
 
@@ -401,9 +421,12 @@ while true ; do
   # | Try to make a picture with the camera |
   # -----------------------------------------
 
-  # Print some information on LCD display 2
-  if ! python3 ${LCD_DRIVER2} "Make a picture" "" "" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  # This is only required if we use 2 LCD displays.
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    # Print some information on LCD display 2
+    if ! python3 ${LCD_DRIVER2} "Make a picture" "" "" "" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 
   make_a_picture
@@ -412,9 +435,12 @@ while true ; do
   # | Object detection and logfile creation |
   # -----------------------------------------
 
-  # Print some information on LCD display 2
-  if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  # This is only required if we use 2 LCD displays.
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    # Print some information on LCD display 2
+    if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "" "" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 
   detect_objects
@@ -425,9 +451,12 @@ while true ; do
   # | picture and the log file to the images directory |
   # ----------------------------------------------------
 
-  # Print some information on LCD display 2
-  if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  # This is only required if we use 2 LCD displays.
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    # Print some information on LCD display 2
+    if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 
   check_if_objects_have_been_deteted
@@ -442,7 +471,10 @@ while true ; do
 
   if [ "$HIT" -eq 1 ] ; then
     # If one or more objects have been detected...
-    print_result_on_LCD 
+    # This is only required if we use 1 or 2 LCD displays.
+    if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+      print_result_on_LCD 
+    fi
     # Write information about deteceted objects into log file
     write_detected_objects_message_into_logfile
     # Telegram Bot notification about detected objects will only be send if the
@@ -454,16 +486,22 @@ while true ; do
     fi  
   else
     # If no object has been detected...
-    print_no_object_detected_on_LCD
+    # This is only required if we use 1 or 2 LCD displays.
+    if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+      print_no_object_detected_on_LCD
+    fi
   fi
 
   # ----------------------------------------------
   # | Prevent the images directory from overflow |
   # ----------------------------------------------
 
-  # Print some information on LCD display 2
-  if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "Organize folders" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  # This is only required if we use 2 LCD displays.
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    # Print some information on LCD display 2
+    if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "Organize folders" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 
   prevent_directory_overflow    
