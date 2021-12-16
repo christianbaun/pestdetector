@@ -7,7 +7,7 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 16th 2021
-# version:      0.21
+# version:      0.22
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -149,6 +149,7 @@ fi
 # directory that stores the image files with detected objects
 if [ "$DIRECTORY_IMAGES_MAX_SIZE" -lt 10000 ] ; then
   echo -e "${RED}[ERROR] It makes no sense to specify a maximum size of less than 10 MB for the directory that stores the image files with detected objects.${NC}" 
+  usage
   exit 1
 fi
 
@@ -159,6 +160,20 @@ if [ "$DIRECTORY_LOGS_PARAMETER" -eq 0 ] ; then
   DIRECTORY_LOGS=${STANDARD_DIRECTORY_LOGS}
 fi
 
+# Check if the required command line tools are available
+if ! [ -x "$(command -v hostname)" ]; then
+  echo -e "${RED}[ERROR] The command line tool hostname is missing.${NC}" 
+  exit 1
+else
+  HOSTNAME=$(hostname)
+fi
+
+# Store timestamp of the date in a variable
+DATE_TIME_STAMP=$(date +%Y-%m-%d)
+CLOCK_TIME_STAMP=$(date +%H-%M-%S)
+
+echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}"
+
 # Check if the logs directory already exists
 if [ -e ${DIRECTORY_LOGS} ] ; then
   # If the directory for the logs already exists
@@ -166,30 +181,17 @@ if [ -e ${DIRECTORY_LOGS} ] ; then
 else
   # If the directory for the logs does not already exist => create it
   if mkdir ${DIRECTORY_LOGS} ; then
-    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_LOGS} has been created.${NC}" 
+    echo -e "${GREEN}[OK] The directory ${DIRECTORY_LOGS} has been created.${NC}" 
   else
     echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_LOGS}.${NC}" 
     exit 1
   fi
 fi
 
-# Check if the required command line tools are available
-if ! [ -x "$(command -v hostname)" ]; then
-  echo -e "${RED}[ERROR] The command line tool hostname is missing.${NC}" 
-  exit 1
-fi
-
-# Store timestamp of the date in a variable
-DATE_TIME_STAMP=$(date +%Y-%m-%d)
-CLOCK_TIME_STAMP=$(date +%H-%M-%S)
-
 # Definition of the logfile specification.
 # This can be attached with a pipe to echo commands
 TEE_PROGRAM_LOG=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-pestdetector_log.txt"
 LOGFILE_OBJECTS_DETECTED="${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-detected_objects.txt"
-
-HOSTNAME=$(hostname)
-echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}" | ${TEE_PROGRAM_LOG} 
 
 # Only if the command line parameter -t is set, the Telegram Bot notifications
 # shall be send when the pest detector is started and when objects are detected
