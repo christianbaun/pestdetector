@@ -6,11 +6,12 @@
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
 # date:         December 15th 2021
-# version:      0.19
+# version:      0.20
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
-#               source camera stack. As alternative, the legacy raspistill
-#               command line tool can be used.
+#               source camera stack. 
+#               Tested with the libcamera-apps packet version 2a38ae93f143
+#               As alternative, the raspistill command line tool can be used.
 #               curl command line tool for interaction with the Telegram Bot
 #               Tested with curl 7.74.0
 # optional:     none

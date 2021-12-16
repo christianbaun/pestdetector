@@ -6,13 +6,14 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 15th 2021
-# version:      0.19
+# date:         December 16th 2021
+# version:      0.21
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
-#               source camera stack. As alternative, the legacy raspistill
-#               command line tool can be used.
+#               source camera stack. 
+#               Tested with the libcamera-apps packet version 2a38ae93f143
+#               As alternative, the raspistill command line tool can be used.
 #               curl command line tool for interaction with the Telegram Bot
 #               Tested with curl 7.74.0
 # optional:     none
@@ -33,24 +34,51 @@
 # prevent_directory_overflow()
 . functionlibrary.sh
 
+function usage
+{
+echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t]
+
+Arguments:
+-h : show this message on screen
+-m : the name of the model used for object detection. The name must match the 
+     directory name in the home directory
+-l : the file name of the labelmap used for object detection
+-i : the directory to store the images that contain detected objects
+-s : the maximum size [kB] of the directory to store the images with detected objects.
+     Minimum value is 10000 (= 10 MB)
+-j : the directory to store the log file of pest detector
+-t : use telegram bot notifications. If this flag is set, telegram notifications
+     are send when the pest detector starts and when objects are detected.  
+     The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
+     and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
+"
+
+exit 0
+}
+
+# Script name
+SCRIPT=${0##*/}   
+# This is the detault model that is used when no model name is 
+# specified with the command line parameter -m <modelname>
+STANDARDMODELL=model_2021_07_08_rat_bug_hedgehog
+STANDARDLABELMAP=labelmap.txt
+MODELLNAME_PARAMETER=0
+LABELMAP_PARAMETER=0
 # Path of the directory for the most recent picture
 DIRECTORY_MOST_RECENT_IMAGE="/dev/shm/most_recent_image"
 # Path of the directory for the picture
-DIRECTORY_IMAGES="images"
-#DIRECTORY_IMAGES_MAX_SIZE="1073741824"  # 1 GB max
-DIRECTORY_IMAGES_MAX_SIZE="50000"  # 50 MB max for testing purposes
-DIRECTORY_LOGS="logs"
-DIRECTORY_LOGS_MAX_SIZE="1048576" # 1 MB max
+DIRECTORY_IMAGES_PARAMETER=0
+DIRECTORY_IMAGES=""
+STANDARD_DIRECTORY_IMAGES="images"
+DIRECTORY_IMAGES_MAX_SIZE_PARAMETER=0
+DIRECTORY_IMAGES_MAX_SIZE="" 
+STANDARD_DIRECTORY_IMAGES_MAX_SIZE="50000"  # 50 MB max for testing purposes
+DIRECTORY_LOGS_PARAMETER=0
+DIRECTORY_LOGS=""
+STANDARD_DIRECTORY_LOGS="logs"
+DIRECTORY_LOGS_MAX_SIZE="100000" # 100 MB max
+USE_TELEGRAM_BOT=0
 
-STANDARDMODELL=model_2021_07_08_rat_bug_hedgehog
-
-if [ -z "$1" ]; then
-  # No model provided as parameter => mode default model: $STANDARDMODELL
-  MODELLNAME=$STANDARDMODELL
-fi
-
-MODEL="/home/pi/$MODELLNAME"
-LABELS="/home/pi/$MODELLNAME/labelmap.txt"
 
 LCD_DRIVER1="lcd_output_display1.py"
 LCD_DRIVER2="lcd_output_display2.py"
@@ -66,40 +94,112 @@ WHITE='\033[0;37m'        # White color
 HIT=0
 DETECTED_OBJECTS_OF_LAST_RUN=""
 
+while getopts "hm:l:i:s:j:t" ARG ; do
+  case $ARG in
+    h) usage ;;
+    m) MODELLNAME_PARAMETER=1
+       MODELLNAME=${OPTARG} ;;
+    l) LABELMAP_PARAMETER=1
+       LABELMAP=${OPTARG} ;;
+    i) DIRECTORY_IMAGES_PARAMETER=1
+       DIRECTORY_IMAGES=${OPTARG} ;;
+    s) DIRECTORY_IMAGES_MAX_SIZE_PARAMETER=1
+       DIRECTORY_IMAGES_MAX_SIZE=${OPTARG} ;;
+    j) DIRECTORY_LOGS_PARAMETER=1
+       DIRECTORY_LOGS=${OPTARG} ;;
+    t) USE_TELEGRAM_BOT=1 ;;
+    *) echo -e "${RED}[ERROR] Invalid option! ${OPTARG} ${NC}" 
+       exit 1
+       ;;
+  esac
+done
+
+# If the user did not want to specify the model name name with the parameter -m <modelname>, 
+# the pest detector will use the default model name
+if [ "$MODELLNAME_PARAMETER" -eq 0 ] ; then
+  # No model provided as parameter => default model: $STANDARDMODELL
+  MODELLNAME=${STANDARDMODELL}
+fi
+
+# If the user did not want to specify the file name of the labelmap with the parameter -l <labelmap>, 
+# the pest detector will use the default labelmap file name
+if [ "$LABELMAP_PARAMETER" -eq 0 ] ; then
+  # No labelmap file name provided as parameter => label map file name: $STANDARDLABELMAP
+  LABELMAP=${STANDARDLABELMAP}
+fi
+
+MODEL="/home/pi/${MODELLNAME}"
+LABELS="/home/pi/${MODELLNAME}/${LABELMAP}"
+
+# If the user did not want to specify the directory for the image files with detected objects 
+# with the parameter -i <directory>, the pest detector will use the default image files directory
+if [ "$DIRECTORY_IMAGES_PARAMETER" -eq 0 ] ; then
+  # No image directory provided as parameter => default image directory: $STANDARD_DIRECTORY_IMAGES
+  DIRECTORY_IMAGES=${STANDARD_DIRECTORY_IMAGES}
+fi
+
+# If the user did not want to specify the maximum size of the directory that stores the image files
+# with detected objects with the parameter -s <size>, the pest detector will use the default size
+if [ "$DIRECTORY_IMAGES_MAX_SIZE_PARAMETER" -eq 0 ] ; then
+  # No maximum size for the directory provided as parameter => default size: $STANDARD_DIRECTORY_IMAGES_MAX_SIZE
+  DIRECTORY_IMAGES_MAX_SIZE=${STANDARD_DIRECTORY_IMAGES_MAX_SIZE}
+fi
+
+# It makes no sense to specify a maximum size of less than 10 MB for the 
+# directory that stores the image files with detected objects
+if [ "$DIRECTORY_IMAGES_MAX_SIZE" -lt 10000 ] ; then
+  echo -e "${RED}[ERROR] It makes no sense to specify a maximum size of less than 10 MB for the directory that stores the image files with detected objects.${NC}" 
+  exit 1
+fi
+
+# If the user did not want to specify the directory for the log files 
+# with the parameter -j <directory>, the pest detector will use the default log files directory
+if [ "$DIRECTORY_LOGS_PARAMETER" -eq 0 ] ; then
+  # No image directory provided as parameter => default image directory: $STANDARD_DIRECTORY_LOGS
+  DIRECTORY_LOGS=${STANDARD_DIRECTORY_LOGS}
+fi
+
 # Check if the logs directory already exists
 if [ -e ${DIRECTORY_LOGS} ] ; then
   # If the directory for the logs already exists
-   echo -e "${GREEN}[OK] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}" | ${TEE_PROGRAM_LOG}
+   echo -e "${GREEN}[OK] The directory ${DIRECTORY_LOGS} already exists in the local directory.${NC}" 
 else
   # If the directory for the logs does not already exist => create it
   if mkdir ${DIRECTORY_LOGS} ; then
-    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_LOGS} has been created.${NC}" | ${TEE_PROGRAM_LOG}
+    echo -e "${GREEN}[OK] The local directory ${DIRECTORY_LOGS} has been created.${NC}" 
   else
-    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_LOGS}.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    echo -e "${RED}[ERROR] Unable to create the local directory ${DIRECTORY_LOGS}.${NC}" 
+    exit 1
   fi
 fi
 
 # Check if the required command line tools are available
 if ! [ -x "$(command -v hostname)" ]; then
-    echo -e "${RED}[ERROR] The command line tool hostname is missing.${NC}" | ${TEE_PROGRAM_LOG} 
-    exit 1
-else
-    HOSTNAME=$(hostname)
-    # Store timestamp of the date in a variable
-    DATE_TIME_STAMP=$(date +%Y-%m-%d)
-    CLOCK_TIME_STAMP=$(date +%H-%M-%S)
-    echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}" | ${TEE_PROGRAM_LOG} 
+  echo -e "${RED}[ERROR] The command line tool hostname is missing.${NC}" 
+  exit 1
 fi
 
-if ! [ -x "$(command -v curl)" ]; then
-    echo -e "${RED}[ERROR] The command line tool curl is missing.${NC}" | ${TEE_PROGRAM_LOG} 
-    exit 1
-fi
+# Store timestamp of the date in a variable
+DATE_TIME_STAMP=$(date +%Y-%m-%d)
+CLOCK_TIME_STAMP=$(date +%H-%M-%S)
 
 # Definition of the logfile specification.
 # This can be attached with a pipe to echo commands
 TEE_PROGRAM_LOG=" tee -a ${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-pestdetector_log.txt"
 LOGFILE_OBJECTS_DETECTED="${DIRECTORY_LOGS}/${DATE_TIME_STAMP}-detected_objects.txt"
+
+HOSTNAME=$(hostname)
+echo -e "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP} Welcome to pestdetector on host ${HOSTNAME}" | ${TEE_PROGRAM_LOG} 
+
+# Only if the command line parameter -t is set, the Telegram Bot notifications
+# shall be send when the pest detector is started and when objects are detected
+# and only in this case, the curl command line tool is required.
+if [ "$USE_TELEGRAM_BOT" -eq 1 ] ; then
+  if ! [ -x "$(command -v curl)" ]; then
+      echo -e "${RED}[ERROR] The command line tool curl is missing.${NC}" | ${TEE_PROGRAM_LOG} 
+      exit 1
+  fi
+fi
 
 # ------------------------------
 # | Check the operating system |
@@ -211,29 +311,33 @@ fi
 # | Check if the Telegram Bot notification is possible |
 # ------------------------------------------------------
 
-# If the file with the Telegram Bot url token und the chat ID exist, import the
-# variables $TELEGRAM_TOKEN and $TELEGRAM_CHAT_ID
-PEST_DETECT_TELEGRAM_CONFIG_FILE="/home/pi/pest_detect_telegram_credentials.sh"
-if [ -f $PEST_DETECT_TELEGRAM_CONFIG_FILE ] ; then  
-  . $PEST_DETECT_TELEGRAM_CONFIG_FILE
-  echo -e "${GREEN}[OK] The file with the Telegram Bot information is present.${NC}" | ${TEE_PROGRAM_LOG}
-else 
-  echo -e "${YELLOW}[INFO] The file with the Telegram Bot information is not present.${NC}" | ${TEE_PROGRAM_LOG}
-fi
+# Only if the command line parameter -t is set, the Telegram Bot notifications
+# are send when the pest detector is started and when objects are detected
+if [ "$USE_TELEGRAM_BOT" -eq 1 ] ; then
+  # If the file with the Telegram Bot url token und the chat ID exist, import the
+  # variables $TELEGRAM_TOKEN and $TELEGRAM_CHAT_ID
+  PEST_DETECT_TELEGRAM_CONFIG_FILE="/home/pi/pest_detect_telegram_credentials.sh"
+  if [ -f $PEST_DETECT_TELEGRAM_CONFIG_FILE ] ; then  
+    . $PEST_DETECT_TELEGRAM_CONFIG_FILE
+    echo -e "${GREEN}[OK] The file with the Telegram Bot information is present.${NC}" | ${TEE_PROGRAM_LOG}
+  else 
+    echo -e "${YELLOW}[INFO] The file with the Telegram Bot information is not present.${NC}" | ${TEE_PROGRAM_LOG}
+  fi
 
-# Check if all variables that are required for the Telegram Bot notification
-# do exist and are not empty 
-if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ] ; then
-  echo -e "${YELLOW}[INFO] One or more variables that are reqiored for the Telegram Bot notifications are undefined.${NC}" | ${TEE_PROGRAM_LOG}
-  echo -e "${YELLOW}[INFO] Please set the variables \$TELEGRAM_TOKEN and \$TELEGRAM_CHAT_ID if you want using Telegram Bot notifications.${NC}" | ${TEE_PROGRAM_LOG}
-  TELEGRAM_NOTIFICATIONS=0
-else
-  TELEGRAM_NOTIFICATIONS=1  
-fi
+  # Check if all variables that are required for the Telegram Bot notification
+  # do exist and are not empty 
+  if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ] ; then
+    echo -e "${YELLOW}[INFO] One or more variables that are reqiored for the Telegram Bot notifications are undefined.${NC}" | ${TEE_PROGRAM_LOG}
+    echo -e "${YELLOW}[INFO] Please set the variables \$TELEGRAM_TOKEN and \$TELEGRAM_CHAT_ID if you want using Telegram Bot notifications.${NC}" | ${TEE_PROGRAM_LOG}
+    TELEGRAM_NOTIFICATIONS=0
+  else
+    TELEGRAM_NOTIFICATIONS=1  
+  fi
 
-if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then 
-  curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="Pest Detector has been started." --data chat_id=${TELEGRAM_CHAT_ID} > /dev/null
-fi       
+  if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then 
+    curl -s -X POST ${TELEGRAM_TOKEN}/sendMessage --data text="Pest Detector has been started." --data chat_id=${TELEGRAM_CHAT_ID} > /dev/null
+  fi    
+fi  
 
 # --------------------------------------------------
 # | Check if the required directories/folders exit |
@@ -339,7 +443,10 @@ while true ; do
     print_result_on_LCD 
     # Write information about deteceted objects into log file
     write_detected_objects_message_into_logfile
-    if [[ ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then 
+    # Telegram Bot notification about detected objects will only be send if the
+    # user wants to do this by providing command line argument -t and if the 
+    # required variables $TELEGRAM_TOKEN and $TELEGRAM_CHAT_ID are present
+    if [[ ${USE_TELEGRAM_BOT} -eq 1 && ${TELEGRAM_NOTIFICATIONS} -eq 1 ]]; then 
       # Inform the Telegram Bot about the detected objects
       inform_telegram_bot
     fi  
