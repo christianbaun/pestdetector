@@ -14,6 +14,8 @@
 #               As alternative, the raspistill command line tool can be used.
 #               curl command line tool for interaction with the Telegram Bot
 #               Tested with curl 7.74.0
+#               hostname command line tool. Tested with 3.21
+#               ping command line tool. Tested with iputils-s20180629
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). A LCD 4x20 with a HD44780 controller, 

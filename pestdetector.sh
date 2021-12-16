@@ -16,6 +16,8 @@
 #               As alternative, the raspistill command line tool can be used.
 #               curl command line tool for interaction with the Telegram Bot
 #               Tested with curl 7.74.0
+#               hostname command line tool. Tested with 3.21
+#               ping command line tool. Tested with iputils-s20180629
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 
@@ -46,7 +48,7 @@ Arguments:
 -i : the directory to store the images that contain detected objects
 -s : the maximum size [kB] of the directory to store the images with detected objects.
      Minimum value is 10000 (= 10 MB)
--j : the directory to store the log file of pest detector
+-j : the directory to store the log files of pest detector
 -t : use telegram bot notifications. If this flag is set, telegram notifications
      are send when the pest detector starts and when objects are detected.  
      The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
