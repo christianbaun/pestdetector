@@ -47,6 +47,18 @@ The TensorFlow Lite application is taken from [here](https://github.com/EdjeElec
 
 The LCD driver is taken from [here](https://github.com/ArcadiaLabs/raspberry_lcd4x20_I2C)
 
+## Related Work
+
+Some interesting papers and software projects focusing on object detection with single-board computers:
+
+- [Where's The Bear? - Automating Wildlife Image Processing Using IoT and Edge Cloud Systems]{https://cs.ucsb.edu/sites/default/files/documents/tr.pdf}. The authors performed wildlife detection (bear, deer, and coyote) on WIFI-connected edge nodes with motion-triggered cameras. In this project, the training was done using external cloud services. The way of training data generation is remarkable. Background images without animals were combined with animal images (with transparent background) from Google Image Search at different times of the day. In this project, Tensorflow and OpenCV were used. The image recognition worked very well. The classification accuracy with a TensorFlow confidence value of more than 90% was 66% for all tested images. The error rate for coyote was 0.2%, the error rate for bear was 1% and the error rate for deer was 12%. 
+
+## Web Site
+
+Visit the pestdetect web page for more information and the latest revision.
+
+[https://github.com/christianbaun/pestdetector](https://github.com/christianbaun/pestdetector)
+
 ## License
 
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) or later for the pestdetector.sh<br/>
