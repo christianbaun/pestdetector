@@ -18,6 +18,7 @@
 #               Tested with curl 7.74.0
 #               hostname command line tool. Tested with 3.21
 #               ping command line tool. Tested with iputils-s20180629
+#               python3 for the LCD driver when using the LCD 4x20 displays
 # optional:     none
 # notes:        This script has been developed to run on a Raspberry Pi 4 
 #               (4 GB RAM). Two LCD 4x20 displays with HD44780 controllers, 
