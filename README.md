@@ -3,7 +3,7 @@
 
 # pestdetector
 
-This repository contains bash scripts, python scripts, and documentation material, that I created for my pest detector prototype research work. The pest detector script collection is a command-line tool for detecting rats and other forms of pests like cockroaches in images that are created by a Raspberry Pi single-board computer with a Raspberry Pi High-Quality Camera (hqcam), or a Raspberry Pi Camera V2, or a similar model. The object detection is done by TensorFlow lite that runs on the Raspberry Pi and is accelerated by a Coral Accelerator TPU coprocessor.
+This repository contains bash scripts, python scripts, and documentation material, that I created for my pest detector prototype research work. The pest detector script collection is a command-line tool for detecting rats and other forms of pests like cockroaches in images that are created by a [Raspberry Pi](https://www.raspberrypi.com) single-board computer node with a Raspberry Pi [High-Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/) (hqcam), or a Raspberry Pi [Camera Module 2](https://www.raspberrypi.com/products/camera-module-v2/), or a similar model. The object detection is done by [TensorFlow](https://github.com/tensorflow/tensorflow) lite that runs on the Raspberry Pi and is accelerated by a [Coral Accelerator TPU coprocessor](https://coral.ai/products/accelerator/).
 
 ## Synopsis
 
