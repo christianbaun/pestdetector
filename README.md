@@ -34,7 +34,7 @@ These software packages must be installed:
 - [curl](https://curl.se) 7.64.0
 - hostname 3.21
 - [ping](https://github.com/iputils/iputils) iputils-s20180629
-- [python](https://www.python.org) 3^
+- [python](https://www.python.org) 3
 
 ## Examples
 
