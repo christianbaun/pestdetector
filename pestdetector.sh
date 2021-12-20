@@ -6,8 +6,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 17th 2021
-# version:      1.0
+# date:         December 20th 2021
+# version:      1.1
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -39,7 +39,7 @@
 
 function usage
 {
-echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>]
+echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>] [-c]
 
 Arguments:
 -h : show this message on screen
@@ -55,6 +55,7 @@ Arguments:
      The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
      and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
 -d : use 0, 1 or 2 LCD displays (4x20)
+-c : use Coral Accelerator TPU coprocessor 
 "
 
 exit 0
@@ -85,6 +86,7 @@ DIRECTORY_LOGS_MAX_SIZE="100000" # 100 MB max
 USE_TELEGRAM_BOT=0
 # Do not use LCDdisplays 4x20 per default
 NUM_LCD_DISPLAYS=0
+USE_CORAL_TPU_COPROCESSOR=0
 
 
 LCD_DRIVER1="lcd_output_display1.py"
@@ -101,7 +103,7 @@ WHITE='\033[0;37m'        # White color
 HIT=0
 DETECTED_OBJECTS_OF_LAST_RUN=""
 
-while getopts "hm:l:i:s:j:td:" ARG ; do
+while getopts "hm:l:i:s:j:td:c" ARG ; do
   case $ARG in
     h) usage ;;
     m) MODELLNAME_PARAMETER=1
@@ -116,6 +118,7 @@ while getopts "hm:l:i:s:j:td:" ARG ; do
        DIRECTORY_LOGS=${OPTARG} ;;
     t) USE_TELEGRAM_BOT=1 ;;
     d) NUM_LCD_DISPLAYS=${OPTARG} ;;
+    c) USE_CORAL_TPU_COPROCESSOR=1 ;;
     *) echo -e "${RED}[ERROR] Invalid option! ${OPTARG} ${NC}" 
        exit 1
        ;;

@@ -5,8 +5,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 17th 2021
-# version:      1.0
+# date:         December 20th 2021
+# version:      1.1
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. 
@@ -67,7 +67,16 @@ function detect_objects(){
   LOG_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.txt"
 
   if [[ -f "${IMAGE_FILENAME_AND_PATH}" ]] ; then
-    python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect_edgetpu.tflite --labels=${LABELS} --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
+    
+    # Check, if the user wants to use the Coral Accelerator TPU coprocessor (specified with command line parameter -c)
+    if [ "$USE_CORAL_TPU_COPROCESSOR" -eq 1 ] ; then
+      echo -e "${YELLOW}[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.${NC}" | ${TEE_PROGRAM_LOG}      
+      time python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect_edgetpu.tflite --labels=${LABELS} --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
+    else
+      # If the user does not want to use the Coral Accelerator TPU coprocessor...
+      echo -e "${YELLOW}[INFO] Try to detect obects without the Coral Accelerator TPU coprocessor.${NC}" | ${TEE_PROGRAM_LOG}      
+      time python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect.tflite --labels=${LABELS} --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
+    fi
   else
     # There should be a log file. If there is no log file, something strange happened
     echo -e "${RED}[ERROR] The image file ${IMAGE_FILENAME_AND_PATH} was not found.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
