@@ -127,6 +127,7 @@ if use_TPU:
     print(PATH_TO_CKPT)
 else:
     interpreter = Interpreter(model_path=PATH_TO_CKPT)
+    print(PATH_TO_CKPT)
 
 interpreter.allocate_tensors()
 

@@ -7,7 +7,7 @@ This repository contains bash scripts, python scripts, and documentation materia
 
 ## Synopsis
 
-    pestdetector.sh [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>]
+    pestdetector.sh [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>] [-c]
 
     Arguments:
     -h : show this message on screen
@@ -23,6 +23,7 @@ This repository contains bash scripts, python scripts, and documentation materia
         The bot token url and the chat ID must be specified as variables $TELEGRAM_TOKEN
         and $TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
     -d : use 0, 1 or 2 LCD displays (4x20)
+    -c : use Coral Accelerator TPU coprocessor 
 
 ## Requirements
 

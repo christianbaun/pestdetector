@@ -73,7 +73,7 @@ $ systemctl list-units --type=service | grep pest
 pestdetect.service                                          loaded active running Pest Detector Service  
 
 When the systemd service file is changed...
-$ sudo nano /lib/systemd/system/pestdetect.servic
+$ sudo nano /lib/systemd/system/pestdetect.service
 the deamon need to be reloaded:
 $ sudo systemctl daemon-reload
 
@@ -84,3 +84,28 @@ sudo nano /etc/rc.local
 
 Add this line (final line exit 0 !!!) 
 /home/pi/pestdetector/pestdetector.sh
+
+* Performance evaluation (without Coral TPU and with Coral TPU)
+
+$ time ./performance_test
+...
+run 168
+/home/pi/model_2021_07_08_rat_bug_hedgehog/detect.tflite
+run 169
+/home/pi/model_2021_07_08_rat_bug_hedgehog/detect.tflite
+
+real	1m58,900s
+user	2m32,782s
+sys	1m41,334s
+
+
+$ time ./performance_test_coral_tpu 
+...
+run 168
+/home/pi/model_2021_07_08_rat_bug_hedgehog/detect_edgetpu.tflite
+run 169
+/home/pi/model_2021_07_08_rat_bug_hedgehog/detect_edgetpu.tflite
+
+real	10m7,781s
+user	2m39,826s
+sys	1m53,368s
