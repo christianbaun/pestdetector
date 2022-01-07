@@ -74,7 +74,7 @@ function detect_objects(){
       time python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect_edgetpu.tflite --labels=${LABELS} --edgetpu --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
     else
       # If the user does not want to use the Coral Accelerator TPU coprocessor...
-      echo -e "${YELLOW}[INFO] Try to detect obects without the Coral Accelerator TPU coprocessor.${NC}" | ${TEE_PROGRAM_LOG}      
+      echo -e "${YELLOW}[INFO] Try to detect obects without the Coral Accelerator TPU coprocessor by just using the CPU.${NC}" | ${TEE_PROGRAM_LOG}      
       time python3 TFLite_detection_image_modified.py --modeldir=${MODEL} --graph=detect.tflite --labels=${LABELS} --image=${IMAGE_FILENAME_AND_PATH} 2>&1 | tee -a ${LOG_FILENAME_AND_PATH}
     fi
   else
