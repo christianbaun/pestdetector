@@ -1,0 +1,95 @@
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;31m[INFO] This computer has no working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been created.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2022-01-06 10:00:54 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-00-55.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-00-55.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 24[0m
+[0;32m[OK] Used Bytes in images: 51048[0m
+[0;33m[INFO] The directory images consumes 51048 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2022-01-04-21-49-26.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 48948 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2022-01-06 10:01:51 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-01-52.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-01-52.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:00 ==> Start of program run 3 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-01.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-01.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:09 ==> Start of program run 4 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-10.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-10.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:18 ==> Start of program run 5 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-18.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-18.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:27 ==> Start of program run 6 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-27.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-27.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:36 ==> Start of program run 7 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-36.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-36.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:45 ==> Start of program run 8 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-45.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-45.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:02:53 ==> Start of program run 9 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-02-54.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-06-10-02-54.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 23[0m
+[0;32m[OK] Used Bytes in images: 48948[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-06 10:03:02 ==> Start of program run 10 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-06-10-03-03.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m

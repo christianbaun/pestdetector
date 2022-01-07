@@ -1,0 +1,13 @@
+Edge TPU Compiler version 15.0.340273435
+Input: /home/bnc/Bilderkennung/model_2021_07_08_rat_bug_hedgehog/detect.tflite
+Output: /home/bnc/Bilderkennung/model_2021_07_08_rat_bug_hedgehog/detect_edgetpu.tflite
+
+Operator                       Count      Status
+
+ADD                            10         Mapped to Edge TPU
+CUSTOM                         1          Operation is working on an unsupported data type
+LOGISTIC                       1          Mapped to Edge TPU
+CONV_2D                        55         Mapped to Edge TPU
+DEPTHWISE_CONV_2D              17         Mapped to Edge TPU
+CONCATENATION                  2          Mapped to Edge TPU
+RESHAPE                        13         Mapped to Edge TPU

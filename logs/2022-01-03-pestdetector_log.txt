@@ -1,0 +1,63 @@
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;32m[OK] The tool libcamera-still appears to work well.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been created.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2022-01-03 20:30:53 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-03-20-30-53.jpg has been created with libcamera-still.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-03-20-30-53.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 49832[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-03 21:33:03 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-03-21-33-04.jpg has been created with libcamera-still.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2022-01-03-21-33-04.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 49832[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2022-01-03 21:33:13 ==> Start of program run 3 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-03-21-33-13.jpg has been created with libcamera-still.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2022-01-03-21-33-13.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-03-21-33-13.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2022-01-03-21-33-13.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 18[0m
+[0;32m[OK] Used Bytes in images: 53512[0m
+[0;33m[INFO] The directory images consumes 53512 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-21-11-10-42.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-21-11-10-42.jpg from images[0m
+[0;32m[OK] Erased the file 2021-12-21-12-55-29.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-21-12-55-29.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 47164 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2022-01-03 21:33:28 ==> Start of program run 4 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-03-21-33-29.jpg has been created with libcamera-still.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2022-01-03-21-33-29.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2022-01-03-21-33-29.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2022-01-03-21-33-29.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 50840[0m
+[0;33m[INFO] The directory images consumes 50840 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-21-12-55-39.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-21-12-55-39.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 47600 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2022-01-03 21:33:42 ==> Start of program run 5 <=== [0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;31m[INFO] This computer has no working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m

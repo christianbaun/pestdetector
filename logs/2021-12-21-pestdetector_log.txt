@@ -1,0 +1,225 @@
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2021-12-21 12:55:29 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-55-29.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects without the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-12-55-29.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-55-29.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-12-55-29.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 55372[0m
+[0;33m[INFO] The directory images consumes 55372 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-07.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-07.jpg from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-18.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-18.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 47916 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 12:55:39 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-55-39.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects without the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-12-55-39.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-55-39.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-12-55-39.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 16[0m
+[0;32m[OK] Used Bytes in images: 51156[0m
+[0;33m[INFO] The directory images consumes 51156 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-29.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-29.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 47444 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 12:55:50 ==> Start of program run 3 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-55-50.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects without the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-12-55-50.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-55-50.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-12-55-50.txt has been moved to the directory images.[0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2021-12-21 12:56:06 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-56-07.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-12-56-07.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-56-07.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-12-56-07.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 53876[0m
+[0;33m[INFO] The directory images consumes 53876 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-40.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-40.jpg from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-52.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-33-52.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 46888 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 12:56:20 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-56-20.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-12-56-20.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-12-56-20.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-12-56-20.txt has been moved to the directory images.[0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;31m[INFO] This computer has no working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been created.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2021-12-21 13:21:14 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-13-21-15.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-13-21-15.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-13-21-15.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-13-21-15.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 53300[0m
+[0;33m[INFO] The directory images consumes 53300 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-34-03.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 49820 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 13:21:29 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-14-55-41.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been created.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2021-12-21 16:37:49 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-16-37-49.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-16-37-49.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-16-37-49.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-16-37-49.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 52848[0m
+[0;33m[INFO] The directory images consumes 52848 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-34-03.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-34-29.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-34-29.jpg from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-34-39.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-34-39.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 46756 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 18:45:16 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-18-45-17.jpg has been created with raspistill.[0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is now empty.[0m
+[0;32m[OK] 2021-12-21 19:23:16 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-16.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-19-23-16.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-16.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-19-23-16.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 16[0m
+[0;32m[OK] Used Bytes in images: 49720[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2021-12-21 19:23:29 ==> Start of program run 2 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-29.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-19-23-29.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-29.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-19-23-29.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 52684[0m
+[0;33m[INFO] The directory images consumes 52684 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-52-56.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-52-56.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 49764 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 19:23:42 ==> Start of program run 3 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-42.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-19-23-42.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-42.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-19-23-42.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 52748[0m
+[0;33m[INFO] The directory images consumes 52748 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-53-07.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-53-07.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 49808 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 19:23:55 ==> Start of program run 4 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-55.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-19-23-55.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-23-55.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-19-23-55.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 52776[0m
+[0;33m[INFO] The directory images consumes 52776 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-53-17.txt from images[0m
+[0;32m[OK] Erased the file 2021-12-20-16-53-17.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 49700 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 19:24:08 ==> Start of program run 5 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-24-09.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] One or more objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-19-24-09.txt.[0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-24-09.jpg has been moved to the directory images.[0m
+[0;32m[OK] The logfile /dev/shm/most_recent_image/2021-12-21-19-24-09.txt has been moved to the directory images.[0m
+[0;32m[OK] Files in images: 17[0m
+[0;32m[OK] Used Bytes in images: 52408[0m
+[0;33m[INFO] The directory images consumes 52408 Bytes which is more than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] Erased the file 2021-12-20-16-54-39.jpg from images[0m
+[0;32m[OK] Now, the directory images consumes 49672 Bytes which is less than the permitted maximum 50000 Bytes.[0m
+[0;32m[OK] 2021-12-21 19:24:20 ==> Start of program run 6 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-19-24-21.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m
+[0;32m[OK] No objects have been detected in the picture /dev/shm/most_recent_image/2021-12-21-19-24-21.txt.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been emptied.[0m
+[0;32m[OK] Files in images: 16[0m
+[0;32m[OK] Used Bytes in images: 49672[0m
+[0;32m[OK] There is enough free storage capacity in the directory images[0m
+[0;32m[OK] 2021-12-21 19:24:29 ==> Start of program run 7 <=== [0m
+[0;31m[ERROR] The LCD command line tool lcd_output_display2.py does not operate properly.[0m
+[0;33m[INFO] The operating system is Linux: linux-gnueabihf[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;33m[INFO] The internet connection is not working now. Will check again.[0m
+[0;32m[OK] This computer has a working internet connection.[0m
+[0;32m[OK] The tool libcamera-still has been found on this system.[0m
+[0;33m[INFO] The tool libcamera-still fails. I try the legacy raspistill instead.[0m
+[0;32m[OK] The tool raspistill has been found on this system.[0m
+[0;33m[INFO] But it is a good idea to install libcamera-still from the libcamera tools because the legacy raspistill tool will stop working in the future.[0m
+[0;32m[OK] The file with the Telegram Bot information is present.[0m
+[0;32m[OK] The directory images already exists in the directory.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image has been created.[0m
+[0;32m[OK] The directory /dev/shm/most_recent_image is empty.[0m
+[0;32m[OK] 2021-12-21 20:58:16 ==> Start of program run 1 <=== [0m
+[0;32m[OK] The picture /dev/shm/most_recent_image/2021-12-21-20-58-16.jpg has been created with raspistill.[0m
+[0;33m[INFO] Try to detect obects with the Coral Accelerator TPU coprocessor.[0m

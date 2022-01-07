@@ -1,0 +1,14 @@
+#!/bin/bash
+
+NUMBER_OF_RUNS=0
+
+for datei in $(find "/home/pi/collection/rats/" -type f | egrep -i "\.jpg|\.jpeg")
+do
+NUMBER_OF_RUNS=$(echo "${NUMBER_OF_RUNS} + 1" | bc)
+echo "run ${NUMBER_OF_RUNS}"
+python3 ../TFLite_detection_image_modified.py \
+--modeldir=/home/pi/model_2021_07_08_rat_bug_hedgehog \
+--graph=detect.tflite \
+--labels=/home/pi/model_2021_07_08_rat_bug_hedgehog/labelmap.txt \
+--image=${DATEI}
+done
