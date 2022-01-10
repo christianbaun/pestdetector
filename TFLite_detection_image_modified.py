@@ -1,8 +1,8 @@
 ######## Webcam Object Detection Using Tensorflow-trained Classifier #########
 #
-# Author: Evan Juras (>98%), some modifications by Christian Baun (<2%)
+# Author: Evan Juras (>97%), some modifications by Christian Baun (<3%)
 # License: Apache-2.0 License
-# Date: December 5th 2021
+# Date: January 10th 2022
 # Description: 
 # This program uses a TensorFlow Lite object detection model to perform object 
 # detection on an image or a folder full of images. It draws boxes and scores 
@@ -97,11 +97,16 @@ CWD_PATH = os.getcwd()
 # Define path to images and grab all image filenames
 if IM_DIR:
     PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_DIR)
-    images = glob.glob(PATH_TO_IMAGES + '/*')
+    # Add image formats here
+    ext = ['jpeg', 'jpg'] 
+    images = []
+    [images.extend(glob.glob(PATH_TO_IMAGES + '/*.' + e)) for e in ext]
+    print(images)
 
 elif IM_NAME:
     PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_NAME)
     images = glob.glob(PATH_TO_IMAGES)
+    print(images)
 
 # Path to .tflite file, which contains the model that is used for object detection
 PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,GRAPH_NAME)
@@ -214,20 +219,33 @@ for image_path in images:
     # All the results have been drawn on the image, now display the image
     # cv2.imshow('Object detector', image)
   
-    # Create filename
-    filename = str(IM_NAME)
-    # filename = date_string+'_'+time_string+'_detected_'+str(IM_NAME)
+    if IM_DIR:
+        print(image_path)
 
-    # Using cv2.imwrite() method
-    # Saving the image
-    cv2.imwrite(filename, image)
+        # Using cv2.imwrite() method
+        # Saving the image
+        cv2.imwrite(image_path, image)
 
-    # Print out some information
-    print('File '+ repr(filename) + ' stored\n');
+        # Print out some information
+        print('File '+ repr(image_path) + ' stored\n');
+
+
+    elif IM_NAME:
+        # Create filename
+        filename = str(IM_NAME)
+        print(filename);
+        # filename = date_string+'_'+time_string+'_detected_'+str(IM_NAME)
+
+        # Using cv2.imwrite() method
+        # Saving the image
+        cv2.imwrite(filename, image)
+
+        # Print out some information
+        print('File '+ repr(filename) + ' stored\n');
 
     # Press any key to continue to next image, or press 'q' to quit
-    if cv2.waitKey(0) == ord('q'):
-        break
+    #if cv2.waitKey(0) == ord('q'):
+    #    break
 
 # Clean up
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
