@@ -5,8 +5,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 20th 2021
-# version:      1.1
+# date:         January 13th 2022
+# version:      1.2
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. 
@@ -24,6 +24,26 @@
 #               work of the pest detector.
 # example:      ./pestdetector.sh
 # ----------------------------------------------------------------------------
+
+# ----------------------------
+# | Clear the LCD display(s) |
+# ----------------------------
+
+function clear_lcd_displays(){
+  # This is required if we use 1 or 2 LCD displays.
+  if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    if ! python3 ${CLEAR_LCD_DRIVER1} ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${CLEAR_LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  fi
+
+  # This is only required if we use 2 LCD displays.
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    if ! python3 ${CLEAR_LCD_DRIVER2} ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${CLEAR_LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  fi
+}
 
 # ----------------------------------------
 # | Try to make a picture with the camera|
@@ -137,8 +157,8 @@ function print_result_on_LCD(){
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
     # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
     LINE1_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 1 | sed 's/Detected Object: //' )
-    LINE2_DETECTED=""
-    LINE3_DETECTED=""
+    LINE2_DETECTED="                    "
+    LINE3_DETECTED="                    "
   # If two lines contain "Detected" => the number of detected objects is equal 2...
   elif [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -eq 2 ] ; then  
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
@@ -151,7 +171,7 @@ function print_result_on_LCD(){
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first three lines 
     # and keep just the last one, which is the third from top.
     # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
-    LINE3_DETECTED=""
+    LINE3_DETECTED="                    "
   # If three or more lines contain "Detected" => the number of detected objects is greater or equal 3...
   elif [ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -ge 3 ] ; then  
     # Fetch from the log file of the picture all lines that contain "Detected" and take the first one.
@@ -165,20 +185,20 @@ function print_result_on_LCD(){
     # and keep just the last one, which is the third from top.
     # The pattern "Detected Object: " at the very beginning of the line is removed by using sed
     LINE3_DETECTED=$(cat ${DIRECTORY_IMAGES}/${DATE_AND_TIME_STAMP}.txt | grep Detected | head -n 3 | tail -n 1 | sed 's/Detected Object: //' )
-    LINE4_DETECTED=""
   else
     # If the object detection resulted in a hit, the log file should contain at least a single
     # line with contains "Detected". If not, something strange happened
-    LINE1_DETECTED=""
-    LINE2_DETECTED=""
-    LINE3_DETECTED=""
+    LINE1_DETECTED="Something           "
+    LINE2_DETECTED="strange             "
+    LINE3_DETECTED="happened!           "
   fi
   # Now, try to print the results of the object detection on the LCD screen
   # And have colons insted of dashes in the variable CLOCK_TIME_STAMP
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
   # If we use 2 LCD displays
   if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
-    if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
+    LCD_LINE_1_1="${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}"
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LINE1_DETECTED}" "${LINE2_DETECTED}" "${LINE3_DETECTED}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   # If we just have 1 LCD display
@@ -187,8 +207,17 @@ function print_result_on_LCD(){
     # Pad the lines with blanks by using sed. We need 20 characters for the LCD display. 
     # Otherwise we have trouble with the old content.
     # Inspired by here: https://www.theunixschool.com/2012/05/right-pad-string-or-number-with-zero.html
+
+    # If we have just a single object detected, we use the lines 3 show the results and erase line 4.
+    if [[ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -eq 1 ]] ; then
+    LCD_LINE_1_3=$(echo ${LINE1_DETECTED} | sed -e :a -e 's/^.\{1,19\}$/&\ /;ta')
+    LCD_LINE_1_4="                    "
+    fi
+    # If we have two or more objects detected, we use the lines 3 and 4 of LCD display 1 to show the results.
+    if [[ "$NUMBER_OF_LINES_IN_LOG_FILE_WITH_DETECTED" -ge 2 ]] ; then
     LCD_LINE_1_3=$(echo ${LINE1_DETECTED} | sed -e :a -e 's/^.\{1,19\}$/&\ /;ta')
     LCD_LINE_1_4=$(echo ${LINE2_DETECTED} | sed -e :a -e 's/^.\{1,19\}$/&\ /;ta')
+    fi
     if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
@@ -221,8 +250,9 @@ function print_no_object_detected_on_LCD(){
   # If we just have 1 LCD display
   elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
     LCD_LINE_1_2="${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}"
-    LCD_LINE_1_3="No objects detected"
-    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "" ; then
+    LCD_LINE_1_3="No objects detected "
+    LCD_LINE_1_4="                    "
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi

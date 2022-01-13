@@ -28,6 +28,7 @@
 # ----------------------------------------------------------------------------
 
 # Function library with thse functions:
+# clear_lcd_displays()
 # make_a_picture()
 # detect_objects()
 # check_if_objects_have_been_deteted()
@@ -433,6 +434,9 @@ else
     echo -e "${RED}[ERROR] Unable to erase the content of the directory ${DIRECTORY_MOST_RECENT_IMAGE}.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   fi
 fi
+
+# Clear the LCD display(s)
+clear_lcd_displays
 
 NUMBER_OF_RUNS=0
 
