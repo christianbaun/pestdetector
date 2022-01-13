@@ -65,9 +65,9 @@ class lcd:
 
       self.lcd_write(LCD_FUNCTIONSET | LCD_2LINE | LCD_5x8DOTS | LCD_4BITMODE)
       self.lcd_write(LCD_DISPLAYCONTROL | LCD_DISPLAYON)
-      self.lcd_write(LCD_CLEARDISPLAY)
-      self.lcd_write(LCD_ENTRYMODESET | LCD_ENTRYLEFT)
-      sleep(0.2)
+#      self.lcd_write(LCD_CLEARDISPLAY)
+#      self.lcd_write(LCD_ENTRYMODESET | LCD_ENTRYLEFT)
+#      sleep(0.2)
 
    # clocks EN to latch command
    def lcd_strobe(self, data):

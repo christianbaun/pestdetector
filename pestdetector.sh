@@ -6,8 +6,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         December 20th 2021
-# version:      1.1
+# date:         January 13th 2022
+# version:      1.2
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -87,8 +87,17 @@ USE_TELEGRAM_BOT=0
 # Do not use LCDdisplays 4x20 per default
 NUM_LCD_DISPLAYS=0
 USE_CORAL_TPU_COPROCESSOR=0
+LCD_LINE_1_1=""
+LCD_LINE_1_2=""
+LCD_LINE_1_3=""
+LCD_LINE_1_4=""
+LCD_LINE_2_1=""
+LCD_LINE_2_2=""
+LCD_LINE_2_3=""
+LCD_LINE_2_4=""
 
-
+CLEAR_LCD_DRIVER1="lcd_display1_clear.py"
+CLEAR_LCD_DRIVER2="lcd_display2_clear.py"
 LCD_DRIVER1="lcd_output_display1.py"
 LCD_DRIVER2="lcd_output_display2.py"
 
@@ -215,12 +224,16 @@ if [ "$USE_TELEGRAM_BOT" -eq 1 ] ; then
 fi
 
 # Validate that the number of 4x20 LCD displays used is 0, 1 or 2
-if ! [[ "$NUM_LCD_DISPLAYS" -eq 0 || "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+if [ "$NUM_LCD_DISPLAYS" -eq 0 ] ; then
+  echo -e "${GREEN}[OK] ${NUM_LCD_DISPLAYS} 4x20 LCD display are used.${NC}" 
+elif [ "$NUM_LCD_DISPLAYS" -eq 1 ] ; then
+  echo -e "${GREEN}[OK] ${NUM_LCD_DISPLAYS} 4x20 LCD display is used.${NC}" 
+elif [ "$NUM_LCD_DISPLAYS" -eq 2 ] ; then
+  echo -e "${GREEN}[OK] ${NUM_LCD_DISPLAYS} 4x20 LCD displays are used.${NC}" 
+else
   echo -e "${RED}[ERROR] The number of 4x20 LCD displays used must be 0, 1 or 2.${NC}" 
   usage
   exit 1
-else
-  echo -e "${GREEN}[OK] ${NUM_LCD_DISPLAYS} are used.${NC}" 
 fi
 
 # ------------------------------
@@ -317,6 +330,10 @@ if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
   if ! [ -f "${LCD_DRIVER1}" ] ; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} is missing.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
   else
+    if ! python3 ${CLEAR_LCD_DRIVER1} ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${CLEAR_LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+    # No matter if we have 1 or 2 LCD displays, the first one will show a welcome message
     if ! python3 ${LCD_DRIVER1} "Welcome to" "pestdetector" "on host" "${HOSTNAME}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
@@ -329,6 +346,9 @@ if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
   if ! [ -f "${LCD_DRIVER1}" ]; then
     echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} is missing.${NC}" && exit 1
   else
+    if ! python3 ${CLEAR_LCD_DRIVER2} ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${CLEAR_LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
     if ! python3 ${LCD_DRIVER2} "This display informs" "about the state of" "the pestdetector" "software" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
@@ -427,11 +447,21 @@ while true ; do
   # | Try to make a picture with the camera |
   # -----------------------------------------
 
-  # This is only required if we use 2 LCD displays.
+  # This is only required if we use 2 LCD displays
   if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
     # Print some information on LCD display 2
-    if ! python3 ${LCD_DRIVER2} "Make a picture" "" "" "" ; then
+    LCD_LINE_2_1="Make a picture      "
+    LCD_LINE_2_2="                    "
+    LCD_LINE_2_3="                    "
+    LCD_LINE_2_4="                    "
+    if ! python3 ${LCD_DRIVER2} "${LCD_LINE_2_1}" "${LCD_LINE_2_2}" "${LCD_LINE_2_3}" "${LCD_LINE_2_4}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  # If we just have 1 LCD display, print some status information on LCD display 1
+  elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
+    LCD_LINE_1_1="Make a picture      "
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
 
@@ -441,11 +471,21 @@ while true ; do
   # | Object detection and logfile creation |
   # -----------------------------------------
 
-  # This is only required if we use 2 LCD displays.
+  # This is only required if we use 2 LCD displays
   if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
     # Print some information on LCD display 2
-    if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "" "" ; then
+    LCD_LINE_2_1="                    "
+    LCD_LINE_2_2="Detect objects      "
+    LCD_LINE_2_3="                    "
+    LCD_LINE_2_4="                    "
+    if ! python3 ${LCD_DRIVER2} "${LCD_LINE_2_1}" "${LCD_LINE_2_2}" "${LCD_LINE_2_3}" "${LCD_LINE_2_4}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  # If we just have 1 LCD display, print some status information on LCD display 1
+  elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
+    LCD_LINE_1_1="Detect objects      "
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
 
@@ -457,11 +497,21 @@ while true ; do
   # | picture and the log file to the images directory |
   # ----------------------------------------------------
 
-  # This is only required if we use 2 LCD displays.
+  # This is only required if we use 2 LCD displays
   if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
     # Print some information on LCD display 2
-    if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "" ; then
+    LCD_LINE_2_1="                    "
+    LCD_LINE_2_2="                    "
+    LCD_LINE_2_3="Analyze results     "
+    LCD_LINE_2_4="                    "
+    if ! python3 ${LCD_DRIVER2} "${LCD_LINE_2_1}" "${LCD_LINE_2_2}" "${LCD_LINE_2_3}" "${LCD_LINE_2_4}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  # If we just have 1 LCD display, print some status information on LCD display 1
+  elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
+    LCD_LINE_1_1="Analyze results     "
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
 
@@ -477,7 +527,7 @@ while true ; do
 
   if [ "$HIT" -eq 1 ] ; then
     # If one or more objects have been detected...
-    # This is only required if we use 1 or 2 LCD displays.
+    # This is only required if we use 1 or 2 LCD displays
     if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
       print_result_on_LCD 
     fi
@@ -502,11 +552,21 @@ while true ; do
   # | Prevent the images directory from overflow |
   # ----------------------------------------------
 
-  # This is only required if we use 2 LCD displays.
+  # This is only required if we use 2 LCD displays
   if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
     # Print some information on LCD display 2
-    if ! python3 ${LCD_DRIVER2} "Make a picture" "Detect objects" "Analyze results" "Organize folders" ; then
+    LCD_LINE_2_1="                    "
+    LCD_LINE_2_2="                    "
+    LCD_LINE_2_3="                    "
+    LCD_LINE_2_4="Organize folders    "
+    if ! python3 ${LCD_DRIVER2} "${LCD_LINE_2_1}" "${LCD_LINE_2_2}" "${LCD_LINE_2_3}" "${LCD_LINE_2_4}" ; then
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER2} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  # If we just have 1 LCD display, print some status information on LCD display 1
+  elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
+    LCD_LINE_1_1="Organize folders    "
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
 

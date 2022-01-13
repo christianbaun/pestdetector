@@ -176,8 +176,22 @@ function print_result_on_LCD(){
   # Now, try to print the results of the object detection on the LCD screen
   # And have colons insted of dashes in the variable CLOCK_TIME_STAMP
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
-  if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  # If we use 2 LCD displays
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "$LINE1_DETECTED" "$LINE2_DETECTED" "$LINE3_DETECTED" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  # If we just have 1 LCD display
+  elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
+    LCD_LINE_1_2="${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}"
+    # Pad the lines with blanks by using sed. We need 20 characters for the LCD display. 
+    # Otherwise we have trouble with the old content.
+    # Inspired by here: https://www.theunixschool.com/2012/05/right-pad-string-or-number-with-zero.html
+    LCD_LINE_1_3=$(echo ${LINE1_DETECTED} | sed -e :a -e 's/^.\{1,19\}$/&\ /;ta')
+    LCD_LINE_1_4=$(echo ${LINE2_DETECTED} | sed -e :a -e 's/^.\{1,19\}$/&\ /;ta')
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "${LCD_LINE_1_4}" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 } 
 
@@ -199,8 +213,18 @@ function write_detected_objects_message_into_logfile(){
 
 function print_no_object_detected_on_LCD(){
   CLOCK_TIME_STAMP_WITH_COLONS=$(echo ${CLOCK_TIME_STAMP} | sed 's/-/:/g' )
-  if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "No objects detected" "" "" ; then
-    echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+  # If we use 2 LCD displays
+  if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
+    if ! python3 ${LCD_DRIVER1} "${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}" "No objects detected" "" "" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
+  # If we just have 1 LCD display
+  elif [[ "$NUM_LCD_DISPLAYS" -eq 1 ]] ; then
+    LCD_LINE_1_2="${DATE_TIME_STAMP} ${CLOCK_TIME_STAMP_WITH_COLONS}"
+    LCD_LINE_1_3="No objects detected"
+    if ! python3 ${LCD_DRIVER1} "${LCD_LINE_1_1}" "${LCD_LINE_1_2}" "${LCD_LINE_1_3}" "" ; then
+      echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
+    fi
   fi
 } 
 

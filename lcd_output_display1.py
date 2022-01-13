@@ -4,7 +4,7 @@ import lcddriver1
 from time import *
 
 lcd = lcddriver1.lcd()
-lcd.lcd_clear()
+#lcd.lcd_clear()
 
 line1=sys.argv[1]
 line2=sys.argv[2]
