@@ -341,6 +341,8 @@ if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
   fi
 fi
 
+sleep 10  ## 1
+
 # This is only required if we use 2 LCD displays.
 if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
   # Check if the LCD "driver" for LCD display 2 (just a command line tool tool to print lines on the LCD) is available
@@ -469,6 +471,8 @@ while true ; do
     fi
   fi
 
+sleep 10  ## 2
+
   make_a_picture
 
   # -----------------------------------------
@@ -492,6 +496,8 @@ while true ; do
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
+
+sleep 10  ## 3
 
   detect_objects
 
@@ -518,6 +524,8 @@ while true ; do
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
+
+  sleep 10  ## 4
 
   check_if_objects_have_been_deteted
 
@@ -573,6 +581,8 @@ while true ; do
       echo -e "${RED}[ERROR] The LCD command line tool ${LCD_DRIVER1} does not operate properly.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi
   fi
+
+sleep 10  ## 5
 
   prevent_directory_overflow    
 
