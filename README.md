@@ -39,35 +39,34 @@ These software packages must be installed:
 
 ## Examples
 
-This command starts pest detector and specidies that a the telegram bot notification is used and one LCD display (4x20) are used to inform about detected objects and the state of the pest detector tool.
+This command starts the pest detector and specifies that the Telegram bot notification and one LCD display (4x20) are used to inform about detected objects and the state of the pest detector tool and the maximum size of the directory that stores image files with detected objects is 100 MB. Further command line arguments specify that the Tensorflow lite model used is stored in the directory `mymodelname` (which is a subfolder of `/home/pi`) and the name of the labelmap file inside the directory `mymodelname` is `labelmap.txt`.
 
-`./pestdetector.sh -t -d 1`
+`./pestdetector.sh -t -d 1 -m mymodelname -l labelmap.txt -s 100000`
 
 ![LCD display information](https://github.com/christianbaun/pestdetector/blob/main/docs/lcd_movie.gif)
 
-
 ## Architecture
 
-The pestdetector software is implemented as bash scripts and python scripts. Them main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
+The pest detector software is implemented as bash scripts and python scripts. Them main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
 
-The script `pestdetector.sh` first checks if the required folders exist and required command line tools like are present. 
+The pest detector first checks if the required folders exist and required command line tools like are present. 
 
-One or two LCD displays can be used to inform about the status auf the prestdetector and if objects have been detected or net. Using LCD displays can be specified by the command line argument `-d <number>`. If LCD dispays shall be used, the pestdetector checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
+One or two LCD displays can be used to inform about the status auf the prest detector and if objects have been detected or net. Using LCD displays can be specified by the command line argument `-d <number>`. If LCD dispays shall be used, the pestdetector checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
 
-The pestdetector implements a Telegram Bot notification feature that can be used with the command line argument `-t`. It requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token und the chat ID and the command line tool `curl` to be present. Pestdetector will check if the file `pest_detect_telegram_credentials.sh`, with contains export commands exists and execute it.
+The pest detector implements a Telegram Bot notification feature that can be used with the command line argument `-t`. It requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token und the chat ID and the command line tool `curl` to be present. The pest detector will check if the file `pest_detect_telegram_credentials.sh`, with contains export commands exists and execute it.
 
-For handling and storing the images, the pestdetector uses two directories:
+For handling and storing the images, the pest detector uses two directories:
 
 1. The directory that is specified by the variable `$DIRECTORY_MOST_RECENT_IMAGE` is used to store the last image. It makes sense to specify a folder here a subfolder of `/dev/shm/` because this temporary file storage filesystem uses main memory and offers best performance and does not reduce the life time of the flash storage used. 
 2. The directory that stores the images with detected objects and the matching logfiles. This folder is specified in the variable `$DIRECTORY_IMAGES` and can be set by the command line argument `-i <folder>`. 
 
 The `pestdetector.sh` script implements an infinite loop that executes these steps:
 
-1. Create a picture with the function `make_a_picture()`. The pestdetector will use `libcamera-still` when the operating system implementes the newer [libcamera](https://libcamera.org/) stack or `raspistill` when using the legacy camera stack. The new picture is stored in the directory that is specified by the variable `$DIRECTORY_MOST_RECENT_IMAGE`.
+1. Create a picture with the function `make_a_picture()`. The pest detector will use `libcamera-still` when the operating system implementes the newer [libcamera](https://libcamera.org/) stack or `raspistill` when using the legacy camera stack. The new picture is stored in the directory that is specified by the variable `$DIRECTORY_MOST_RECENT_IMAGE`.
 2. Try to detect objects with the function `detect_objects()`. This function executes the python script `TFLite_detection_image_modified.py` which uses [TensorFlow](https://github.com/tensorflow/tensorflow) lite. Information about the object detection results are written into a log file of the same filename (but with filename extension `txt`).
-3. Check if one or more objects have been detected with the fuction `check_if_objects_have_been_deteted()`. This function analyzes the log file from step 2 by searching with the command line tool `grep` for lines with the search pattern `Detected`. Every detected object resultes in such a line. If there have been objects detected, the pestdetector moves the picture and the log file of the same filename to the directory that is specified by the variable `$DIRECTORY_IMAGES` that stores the images with detected objects and the matching logfiles.
-4. If one or two LCD displays are used, the pestdetector prints with the fuction `print_result_on_LCD()` information about detected objects on the LCD displays, and write some status information into the logfile with the fuction `write_detected_objects_message_into_logfile()`. In case of detected objects, a Telegram bot notification can be send out with the `function inform_telegram_bot()`. If no objects werde detected, this result is shown on the LCD displays with the fuction `print_no_object_detected_on_LCD()`.
-5. For preventing the directory that stores the images with detected objects to overflow, the pestdetector checks with the fuction `prevent_directory_overflow()` the size of the files inside and if the size exceeds the limit, as many oldest files are erased until the limit is not exceeded anymore.
+3. Check if one or more objects have been detected with the fuction `check_if_objects_have_been_deteted()`. This function analyzes the log file from step 2 by searching with the command line tool `grep` for lines with the search pattern `Detected`. Every detected object resultes in such a line. If there have been objects detected, the pest detector moves the picture and the log file of the same filename to the directory that is specified by the variable `$DIRECTORY_IMAGES` that stores the images with detected objects and the matching logfiles.
+4. If one or two LCD displays are used, the pest detector prints with the fuction `print_result_on_LCD()` information about detected objects on the LCD displays, and write some status information into the logfile with the fuction `write_detected_objects_message_into_logfile()`. In case of detected objects, a Telegram bot notification can be send out with the `function inform_telegram_bot()`. If no objects werde detected, this result is shown on the LCD displays with the fuction `print_no_object_detected_on_LCD()`.
+5. For preventing the directory that stores the images with detected objects to overflow, the pest detector checks with the fuction `prevent_directory_overflow()` the size of the files inside and if the size exceeds the limit, as many oldest files are erased until the limit is not exceeded anymore.
 
 ## Third party components
 
