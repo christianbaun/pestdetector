@@ -57,7 +57,7 @@ The pestdetector implements a Telegram Bot notification feature that requires th
 For handling and storing the images, the pestdetector uses two folders:
 
 1. The folder that is specified by the variable `$DIRECTORY_MOST_RECENT_IMAGE` is used to store the last image. It makes sense to specify a folder here a subfolder of `/dev/shm/` because this temporary file storage filesystem uses main memory and offers best performance and does not reduce the life time of the flash storage used. 
-2. The folder that stores the images with detected objects and the matching logfiles.
+2. The folder that stores the images with detected objects and the matching logfiles. This folder is specified in the variable `$DIRECTORY_IMAGES` and can be set by the command line argument `-i <folder>`. 
 
 ## Third party components
 
