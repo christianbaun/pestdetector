@@ -52,12 +52,17 @@ The pestdetector software is implemented as bash scripts and python scripts. The
 
 The script `pestdetector.sh` first checks if the required folders exist and command line tools like `libcamera-still` (when using the newer libcamera stack) or `raspistill` (when using the legacy stack) are present. In addition pestdetector.sh checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
 
-The pestdetector implements a Telegram Bot notification feature that requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token und the chat ID. Pestdetector will check if the file `pest_detect_telegram_credentials.sh` with export commands exists and execute it.
+The pestdetector implements a Telegram Bot notification feature that requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token und the chat ID and the command line tool `curl` to be present. Pestdetector will check if the file `pest_detect_telegram_credentials.sh`, with contains export commands exists and execute it.
 
 For handling and storing the images, the pestdetector uses two folders:
 
 1. The folder that is specified by the variable `$DIRECTORY_MOST_RECENT_IMAGE` is used to store the last image. It makes sense to specify a folder here a subfolder of `/dev/shm/` because this temporary file storage filesystem uses main memory and offers best performance and does not reduce the life time of the flash storage used. 
 2. The folder that stores the images with detected objects and the matching logfiles. This folder is specified in the variable `$DIRECTORY_IMAGES` and can be set by the command line argument `-i <folder>`. 
+
+The `pestdetector.sh` script implements an infinite loop that executes these steps:
+
+1. Create a picture with the function `make_a_picture()`.
+2. TBD
 
 ## Third party components
 
