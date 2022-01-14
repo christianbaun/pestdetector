@@ -50,7 +50,14 @@ This command starts pest detector and specidies that a the telegram bot notifica
 
 The pestdetector software is implemented as bash scripts and python scripts. Them main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
 
-The script `pestdetector.sh` first checks if the required folders exist and command line tools like `libcamera-still` (when using the newer libcamera stack) or `raspistill` (when using the legacy stack) are present. In addition pestdetector.sh checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
+The script `pestdetector.sh` first checks if the required folders exist and command line tools like `libcamera-still` (when using the newer libcamera stack) or `raspistill` (when using the legacy stack) are present. In addition pestdetector.sh checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
+
+The pestdetector implements a Telegram Bot notification feature that requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token und the chat ID. Pestdetector will check if the file `pest_detect_telegram_credentials.sh` with export commands exists and execute it.
+
+For handling and storing the images, the pestdetector uses two folders:
+
+1. The folder that is specified by the variable `$DIRECTORY_MOST_RECENT_IMAGE` is used to store the last image. It makes sense to specify a folder here a subfolder of `/dev/shm/` because this temporary file storage filesystem uses main memory and offers best performance and does not reduce the life time of the flash storage used. 
+2. The folder that stores the images with detected objects and the matching logfiles.
 
 ## Third party components
 
