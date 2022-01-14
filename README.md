@@ -3,7 +3,7 @@
 
 # pestdetector
 
-This repository contains bash scripts, python scripts, and documentation material, that I created for my pest detector prototype research work. The pest detector script collection is a command-line tool for detecting rats and other forms of pests like cockroaches in images that are created by a [Raspberry Pi](https://www.raspberrypi.com) single-board computer node with a Raspberry Pi [High-Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/) (hqcam), or a Raspberry Pi [Camera Module 2](https://www.raspberrypi.com/products/camera-module-v2/), or a similar model. The object detection is done by [TensorFlow](https://github.com/tensorflow/tensorflow) lite that runs on the Raspberry Pi and is accelerated by a [Coral Accelerator TPU coprocessor](https://coral.ai/products/accelerator/).
+This repository contains bash scripts, python scripts, and documentation material, that I created for my pest detector prototype research work. The pest detector script collection is a command-line tool for detecting rats and other forms of pests like cockroaches in images that are created by a [Raspberry Pi](https://www.raspberrypi.com) single-board computer node with a Raspberry Pi [High-Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/) (hqcam), or a Raspberry Pi [Camera Module 2](https://www.raspberrypi.com/products/camera-module-v2/), or a similar model. The object detection is done by [TensorFlow](https://github.com/tensorflow/tensorflow) lite that runs on the Raspberry Pi and can by done by using die CPU of the single board computer or by using a [Coral Accelerator TPU coprocessor](https://coral.ai/products/accelerator/).
 
 ## Synopsis
 
@@ -39,9 +39,12 @@ These software packages must be installed:
 
 ## Examples
 
-This command starts pest detector and specidies that a the telegram bot notification is used and two LCD displays (4x20) are used to inform about detected objects and the state of the pest detector tool.
+This command starts pest detector and specidies that a the telegram bot notification is used and one LCD display (4x20) are used to inform about detected objects and the state of the pest detector tool.
 
-`./pestdetector.sh -t -d 2`
+`./pestdetector.sh -t -d 1`
+
+![LCD display information](https://github.com/christianbaun/pestdetector/blob/main/docs/lcd_movie.gif)
+
 
 ## Third party components
 
@@ -58,6 +61,12 @@ Some interesting papers and software projects focusing on object detection with 
 - [Tracking Animals in Wildlife Videos Using Face Detection](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.60.7522&rep=rep1&type=pdf). *Tilo Burghardt, Janko Calic, Barry Thomas*. 2004. In this paper, the authors present an algorithm for the detection and tracking of animal faces in wildlife videos. The method is illustrated on lions. The authors werde able to detect lions and identify individual animals with the help of image recognition. 
 - [Automated identification of animal species in camera trap images](https://link.springer.com/article/10.1186/1687-5281-2013-52). *Xiaoyuan Yu, Jiangping Wang, Roland Kays, Patrick A Jansen, Tianjiang Wang, Thomas Huang*. 2013. In this paper, the authors describe a system for automatic image recognition. The system was able to identify 18 animal species from over 7000 images with an average classification accuracy of 82%.
 - [Detecting animals in the backyard - practical application of deep learning](https://towardsdatascience.com/detecting-animals-in-the-backyard-practical-application-of-deep-learning-c030d3263ba8). *Gaiar Baimuratov*. 2020. In this project, the author used image recognition to detect (not classify) animals, persons, and vehicles with the pre-trained open-source model [MegaDetector](http://dmorris.net/misc/cameratraps/ai4e_camera_traps_overview/). The author used Xiaomi/Mi Outdoor Cameras with hacked firmware and a Raspberry Pi single-board computer to copy away from the cameras the video files via FTP to an external USB-connected storage drive. Videos are only created by the cameras when motion is detected. The videos are processed via OpenCV and analyzed with Tensorflow and the MegaDetector model. The Python scripts, the author created, send analyzed videos to his Telegram Channel. The Raspberry Pi needs around 10 minutes to process a FullHD one-minute 10 FPS video file.
+
+## Architecture
+
+The pestdetector software is implemented as bash scripts and python scripts. Them main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
+
+TBD: More information about the architecture.
 
 ## Web Site
 
