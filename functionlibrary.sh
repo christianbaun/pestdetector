@@ -104,7 +104,7 @@ function detect_objects(){
 }
 
 # ----------------------------------------------------
-# | Check of one or more objects have been detected. |
+# | Check if one or more objects have been detected. |
 # | If there have been objects detected, move the    | 
 # | picture and the log file to the images directory |
 # ----------------------------------------------------
