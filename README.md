@@ -7,7 +7,7 @@ This repository contains bash scripts, python scripts, and documentation materia
 
 ## Synopsis
 
-    pestdetector.sh [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>] [-c]
+    pestdetector.sh [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-o <time>] [-d <number>] [-c]
 
     Arguments:
     -h : show this message on screen
@@ -20,11 +20,12 @@ This repository contains bash scripts, python scripts, and documentation materia
     -j : the directory to store the log files of pest detector
     -t : use telegram bot notifications. If this flag is set, telegram notifications
         are send when the pest detector starts and when objects are detected.  
-        The bot token url and the chat ID must be specified as variables $TELEGRAM_TOKEN
-        and $TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
+        The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
+        and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
+    -o : slow motion operation mode for obervation, debugging and documentation purposes. 
+        Inserts a pause of <time> seconds between the single steps of the pest detector
     -d : use 0, 1 or 2 LCD displays (4x20)
     -c : use Coral Accelerator TPU coprocessor 
-
 ## Requirements
 
 These software packages must be installed:
