@@ -29,12 +29,12 @@ This repository contains bash scripts, python scripts, and documentation materia
 
 These software packages must be installed:
 
-- [bash](https://www.gnu.org/software/bash/) (tested with v5.0.3)
+- [bash](https://www.gnu.org/software/bash/) (tested with v5.1.4 and v5.0.3)
 - [libcamera-still](https://libcamera.org/) from the libcamera open source camera stack
 - [raspistill](https://github.com/raspberrypi/userland/blob/master/host_applications/linux/apps/raspicam/RaspiStill.c) as an alternative tool to libcamera-still that uses the legacy camera stack
-- [curl](https://curl.se) (tested with v7.64.0)
-- hostname (tested with v3.21)
-- [ping](https://github.com/iputils/iputils) (tested with iputils-s20180629)
+- [curl](https://curl.se) (tested with v7.74.0 and v7.64.0)
+- hostname (tested with v3.21 and v3.23)
+- [ping](https://github.com/iputils/iputils) (tested with iputils-20210202 and iputils-s20180629)
 - [python](https://www.python.org) 3
 
 ## Examples
