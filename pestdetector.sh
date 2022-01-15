@@ -6,8 +6,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         January 13th 2022
-# version:      1.2
+# date:         January 15th 2022
+# version:      1.3
 # bash_version: tested with 5.1.4(1)-release
 # requires:     The functions in functionlibrary.sh
 #               libcamera-still command line tool that uses the libcamera open 
@@ -40,7 +40,7 @@
 
 function usage
 {
-echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-d <number>] [-c]
+echo "$SCRIPT [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-o <time>] [-d <number>] [-c]
 
 Arguments:
 -h : show this message on screen
@@ -55,6 +55,8 @@ Arguments:
      are send when the pest detector starts and when objects are detected.  
      The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
      and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
+-o : slow motion operation mode for obervation, debugging and documentation purposes. 
+     Inserts a pause of <time> seconds between the single steps of the pest detector
 -d : use 0, 1 or 2 LCD displays (4x20)
 -c : use Coral Accelerator TPU coprocessor 
 "
@@ -83,6 +85,8 @@ DIRECTORY_LOGS_PARAMETER=0
 DIRECTORY_LOGS=""
 STANDARD_DIRECTORY_LOGS="logs"
 DIRECTORY_LOGS_MAX_SIZE="100000" # 100 MB max
+SLOW_MOTION_MODE=0
+SLOW_MOTION_MODE_TIME=0
 # Do not use the telegram bot notification per default
 USE_TELEGRAM_BOT=0
 # Do not use LCDdisplays 4x20 per default
@@ -113,7 +117,7 @@ WHITE='\033[0;37m'        # White color
 HIT=0
 DETECTED_OBJECTS_OF_LAST_RUN=""
 
-while getopts "hm:l:i:s:j:td:c" ARG ; do
+while getopts "hm:l:i:s:j:o:td:c" ARG ; do
   case $ARG in
     h) usage ;;
     m) MODELLNAME_PARAMETER=1
@@ -126,6 +130,8 @@ while getopts "hm:l:i:s:j:td:c" ARG ; do
        DIRECTORY_IMAGES_MAX_SIZE=${OPTARG} ;;
     j) DIRECTORY_LOGS_PARAMETER=1
        DIRECTORY_LOGS=${OPTARG} ;;
+    o) SLOW_MOTION_MODE=1 
+       SLOW_MOTION_MODE_TIME=${OPTARG} ;;
     t) USE_TELEGRAM_BOT=1 ;;
     d) NUM_LCD_DISPLAYS=${OPTARG} ;;
     c) USE_CORAL_TPU_COPROCESSOR=1 ;;
@@ -341,7 +347,9 @@ if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
   fi
 fi
 
-sleep 10  ## 1
+if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  sleep "${SLOW_MOTION_MODE_TIME}"
+fi
 
 # This is only required if we use 2 LCD displays.
 if [[ "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
@@ -471,7 +479,9 @@ while true ; do
     fi
   fi
 
-sleep 10  ## 2
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}"
+  fi
 
   make_a_picture
 
@@ -497,7 +507,9 @@ sleep 10  ## 2
     fi
   fi
 
-sleep 10  ## 3
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}"
+  fi
 
   detect_objects
 
@@ -525,7 +537,9 @@ sleep 10  ## 3
     fi
   fi
 
-  sleep 10  ## 4
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}" 
+  fi
 
   check_if_objects_have_been_deteted
 
@@ -582,7 +596,9 @@ sleep 10  ## 3
     fi
   fi
 
-sleep 10  ## 5
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}"
+  fi
 
   prevent_directory_overflow    
 
