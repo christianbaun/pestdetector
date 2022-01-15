@@ -3,7 +3,7 @@
 
 # pestdetector
 
-This repository contains bash scripts, python scripts, and documentation material, that I created for my pest detector prototype research work. The pest detector script collection is a command-line tool for detecting rats and other forms of pests like cockroaches in images that are created by a [Raspberry Pi](https://www.raspberrypi.com) single-board computer node with a Raspberry Pi [High-Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/) (hqcam), or a Raspberry Pi [Camera Module 2](https://www.raspberrypi.com/products/camera-module-v2/), or a similar model. The object detection is done by [TensorFlow](https://github.com/tensorflow/tensorflow) lite that runs on the Raspberry Pi and can by done by using die CPU of the single board computer or by using a [Coral Accelerator TPU coprocessor](https://coral.ai/products/accelerator/).
+This repository contains bash scripts, python scripts, and documentation material, that I created for my pest detector prototype research work. The pest detector script collection is a command-line tool for detecting rats and other forms of pests like cockroaches in images that are created by a [Raspberry Pi](https://www.raspberrypi.com) single-board computer node with a Raspberry Pi [High-Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/) (hqcam), or a Raspberry Pi [Camera Module 2](https://www.raspberrypi.com/products/camera-module-v2/), or a similar model. The object detection is done by [TensorFlow](https://github.com/tensorflow/tensorflow) lite that runs on the Raspberry Pi and can be done by using the CPU of the single-board computer or by using a [Coral Accelerator TPU coprocessor](https://coral.ai/products/accelerator/).
 
 ## Synopsis
 
@@ -39,7 +39,7 @@ These software packages must be installed:
 
 ## Examples
 
-This command starts the pest detector and specifies that the Telegram bot notification and one LCD display (4x20) are used to inform about detected objects and the state of the pest detector tool and the maximum size of the directory that stores image files with detected objects is 100 MB. Further command line arguments specify that the Tensorflow lite model used is stored in the directory `mymodelname` (which is a subfolder of `/home/pi`) and the name of the labelmap file inside the directory `mymodelname` is `labelmap.txt`.
+This command starts the pest detector and specifies that the Telegram bot notification and one LCD display (4x20) are used to inform about detected objects and the state of the pest detector tool and the maximum size of the directory that stores image files with detected objects is 100 MB. Further command-line arguments specify that the Tensorflow lite model used is stored in the directory `mymodelname` (which is a subfolder of `/home/pi`) and the name of the label map file inside the directory `mymodelname` is `labelmap.txt`.
 
 `./pestdetector.sh -t -d 1 -m mymodelname -l labelmap.txt -s 100000`
 
@@ -47,13 +47,13 @@ This command starts the pest detector and specifies that the Telegram bot notifi
 
 ## Architecture
 
-The pest detector software is implemented as bash scripts and python scripts. Them main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
+The pest detector software is implemented as bash scripts and python scripts. The main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
 
-The pest detector first checks if the required folders exist and required command line tools like are present. 
+The pest detector first checks if the required folders exist and required command-line tools like `curl` and `hostname` are present. 
 
-One or two LCD displays can be used to inform about the status auf the prest detector and if objects have been detected or net. Using LCD displays can be specified by the command line argument `-d <number>`. If LCD dispays shall be used, the pestdetector checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
+One or two LCD displays can be used to inform about the status of the prest detector and if objects have been detected or not. Using LCD displays can be specified by the command line argument `-d <number>`. If LCD displays shall be used, the pest detector checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
 
-The pest detector implements a Telegram Bot notification feature that can be used with the command line argument `-t`. It requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token und the chat ID and the command line tool `curl` to be present. The pest detector will check if the file `pest_detect_telegram_credentials.sh`, with contains export commands exists and execute it.
+The pest detector implements a Telegram Bot notification feature that can be used with the command line argument `-t`. It requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token and the chat ID and the command line tool `curl` to be present. The pest detector will check if the file `pest_detect_telegram_credentials.sh`, with contains export commands exists and execute it.
 
 For handling and storing the images, the pest detector uses two directories:
 
