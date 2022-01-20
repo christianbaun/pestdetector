@@ -20,8 +20,8 @@ This repository contains bash scripts, python scripts, and documentation materia
     -j : the directory to store the log files of pest detector
     -t : use telegram bot notifications. If this flag is set, telegram notifications
          are send when the pest detector starts and when objects are detected.  
-         The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
-         and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
+         The bot token url and the chat ID must be specified as variables $TELEGRAM_TOKEN
+         and $TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
     -o : slow motion operation mode for obervation, debugging and documentation purposes. 
          Inserts a pause of <time> seconds between the single steps of the pest detector.
          Minimum value is 1 (= 1 second) and maximum value is 20 (= 20 seconds)
