@@ -48,19 +48,20 @@ Arguments:
      directory name in the home directory
 -l : the file name of the labelmap used for object detection
 -i : the directory to store the images that contain detected objects
--s : the maximum size [kB] of the directory to store the images with detected objects.
-     Minimum value is 10000 (= 10 MB)
+-s : the maximum size [kB] of the directory to store the images with detected 
+     objects. The minimum value is 10000 (= 10 MB)
 -j : the directory to store the log files of pest detector
 -t : use telegram bot notifications. If this flag is set, telegram notifications
      are send when the pest detector starts and when objects are detected.  
-     The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
-     and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
--o : slow motion operation mode for obervation, debugging and documentation purposes. 
-     Inserts a pause of <time> seconds between the single steps of the pest detector
+     The bot token url and the chat ID must be specified as variables 
+     \$TELEGRAM_TOKEN and \$TELEGRAM_CHAT_ID in the file 
+     /home/pi/pest_detect_telegram_credentials.sh
+-o : slow motion operation mode for obervation, debugging and documentation 
+     purposes. Inserts a pause of <time> seconds between the single steps of the
+     pest detector. The minimum value is 1 and the maximum value is 20
 -d : use 0, 1 or 2 LCD displays (4x20)
 -c : use Coral Accelerator TPU coprocessor 
 "
-
 exit 0
 }
 
@@ -180,6 +181,14 @@ if [ "$DIRECTORY_IMAGES_MAX_SIZE" -lt 10000 ] ; then
   exit 1
 fi
 
+# It makes no sense to specify a slow motion waiting time that is less than 1 second 
+# and more than 20 seconds 
+if [[ "$SLOW_MOTION_MODE_TIME" -lt 1 || "$SLOW_MOTION_MODE_TIME" -gt 20 ]] ; then
+  echo -e "${RED}[ERROR] It makes no sense to specify a slow motion waiting time of less than 1 second and more than 20 seconds.${NC}" 
+  usage
+  exit 1
+fi
+
 # If the user did not want to specify the directory for the log files 
 # with the parameter -j <directory>, the pest detector will use the default log files directory
 if [ "$DIRECTORY_LOGS_PARAMETER" -eq 0 ] ; then
@@ -241,6 +250,12 @@ else
   echo -e "${RED}[ERROR] The number of 4x20 LCD displays used must be 0, 1 or 2.${NC}" 
   usage
   exit 1
+fi
+
+# It a slow motion waiting time was specified with the command-line parameter
+# -o <seconds>, an information about this is print out.
+if [ "$SLOW_MOTION_MODE" -eq 1 ] ; then
+  echo -e "${GREEN}[OK] A slow motion waiting time of ${SLOW_MOTION_MODE_TIME} seconds is used.${NC}" 
 fi
 
 # ------------------------------
@@ -485,6 +500,10 @@ while true ; do
 
   make_a_picture
 
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}" 
+  fi
+  
   # -----------------------------------------
   # | Object detection and logfile creation |
   # -----------------------------------------
@@ -512,6 +531,10 @@ while true ; do
   fi
 
   detect_objects
+
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}" 
+  fi
 
   # ----------------------------------------------------
   # | Check if one or more objects have been detected. |
@@ -543,6 +566,10 @@ while true ; do
 
   check_if_objects_have_been_deteted
 
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}" 
+  fi
+
   # ----------------------------------------------------------
   # | If one or more objects have been detected, print       |
   # | the results on the LCD screen => print_result_on_LCD() |
@@ -572,6 +599,10 @@ while true ; do
     if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
       print_no_object_detected_on_LCD
     fi
+  fi
+
+  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+    sleep "${SLOW_MOTION_MODE_TIME}" 
   fi
 
   # ----------------------------------------------

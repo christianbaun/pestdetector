@@ -23,7 +23,8 @@ This repository contains bash scripts, python scripts, and documentation materia
          The bot token url and the chat ID must be specified as variables \$TELEGRAM_TOKEN
          and \$TELEGRAM_CHAT_ID in the file /home/pi/pest_detect_telegram_credentials.sh
     -o : slow motion operation mode for obervation, debugging and documentation purposes. 
-         Inserts a pause of <time> seconds between the single steps of the pest detector
+         Inserts a pause of <time> seconds between the single steps of the pest detector.
+         Minimum value is 1 (= 1 second) and maximum value is 20 (= 20 seconds)
     -d : use 0, 1 or 2 LCD displays (4x20)
     -c : use Coral Accelerator TPU coprocessor 
 ## Requirements

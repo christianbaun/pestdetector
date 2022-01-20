@@ -26,12 +26,15 @@ import numpy as np
 import sys
 import glob
 import importlib.util
+import time
 
 from datetime import datetime
 # datetime object containing current date and time
 now = datetime.now()
 # Get UNIX timestamp containing current date and time
 timestamp = datetime.timestamp(now)
+print('1) UNIX-Timestamp [s] at start: ' + str(timestamp))
+
 
 # Define and parse input arguments
 parser = argparse.ArgumentParser()
@@ -91,6 +94,7 @@ if use_TPU:
         GRAPH_NAME = 'edgetpu.tflite'
 
 
+
 # Get path to current working directory
 CWD_PATH = os.getcwd()
 
@@ -124,6 +128,9 @@ with open(PATH_TO_LABELS, 'r') as f:
 if labels[0] == '???':
     del(labels[0])
 
+most_recent_timestamp = datetime.timestamp(datetime.now()) - timestamp
+print('2) Seconds passed since start: ' + str(most_recent_timestamp))
+
 # Load the Tensorflow Lite model.
 # If using Edge TPU, use special load_delegate argument
 if use_TPU:
@@ -133,6 +140,10 @@ if use_TPU:
 else:
     interpreter = Interpreter(model_path=PATH_TO_CKPT)
     print(PATH_TO_CKPT)
+
+
+most_recent_timestamp = datetime.timestamp(datetime.now()) - timestamp
+print('3) Seconds passed since start: ' + str(most_recent_timestamp))
 
 interpreter.allocate_tensors()
 
@@ -163,6 +174,7 @@ for image_path in images:
 
     # Perform the actual detection by running the model with the image as input
     interpreter.set_tensor(input_details[0]['index'],input_data)
+
     interpreter.invoke()
 
     # Retrieve detection results
@@ -242,6 +254,11 @@ for image_path in images:
 
         # Print out some information
         print('File '+ repr(filename) + ' stored\n');
+
+
+
+    most_recent_timestamp = datetime.timestamp(datetime.now()) - timestamp
+    print('4) Seconds passed since start: ' + str(most_recent_timestamp))
 
     # Press any key to continue to next image, or press 'q' to quit
     #if cv2.waitKey(0) == ord('q'):
