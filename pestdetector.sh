@@ -86,7 +86,7 @@ DIRECTORY_LOGS_PARAMETER=0
 DIRECTORY_LOGS=""
 STANDARD_DIRECTORY_LOGS="logs"
 DIRECTORY_LOGS_MAX_SIZE="100000" # 100 MB max
-SLOW_MOTION_MODE=0
+SLOW_MOTION_MODE_PARAMETER=0
 SLOW_MOTION_MODE_TIME=0
 # Do not use the telegram bot notification per default
 USE_TELEGRAM_BOT=0
@@ -131,7 +131,7 @@ while getopts "hm:l:i:s:j:o:td:c" ARG ; do
        DIRECTORY_IMAGES_MAX_SIZE=${OPTARG} ;;
     j) DIRECTORY_LOGS_PARAMETER=1
        DIRECTORY_LOGS=${OPTARG} ;;
-    o) SLOW_MOTION_MODE=1 
+    o) SLOW_MOTION_MODE_PARAMETER=1 
        SLOW_MOTION_MODE_TIME=${OPTARG} ;;
     t) USE_TELEGRAM_BOT=1 ;;
     d) NUM_LCD_DISPLAYS=${OPTARG} ;;
@@ -183,10 +183,12 @@ fi
 
 # It makes no sense to specify a slow motion waiting time that is less than 1 second 
 # and more than 20 seconds 
-if [[ "$SLOW_MOTION_MODE_TIME" -lt 1 || "$SLOW_MOTION_MODE_TIME" -gt 20 ]] ; then
-  echo -e "${RED}[ERROR] It makes no sense to specify a slow motion waiting time of less than 1 second and more than 20 seconds.${NC}" 
-  usage
-  exit 1
+if [ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ] ; then
+  if [[ "$SLOW_MOTION_MODE_TIME" -lt 1 || "$SLOW_MOTION_MODE_TIME" -gt 20 ]] ; then
+    echo -e "${RED}[ERROR] It makes no sense to specify a slow motion waiting time of less than 1 second and more than 20 seconds.${NC}" 
+    usage
+    exit 1
+  fi
 fi
 
 # If the user did not want to specify the directory for the log files 
@@ -254,7 +256,7 @@ fi
 
 # It a slow motion waiting time was specified with the command-line parameter
 # -o <seconds>, an information about this is print out.
-if [ "$SLOW_MOTION_MODE" -eq 1 ] ; then
+if [ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ] ; then
   echo -e "${GREEN}[OK] A slow motion waiting time of ${SLOW_MOTION_MODE_TIME} seconds is used.${NC}" 
 fi
 
@@ -362,7 +364,7 @@ if [[ "$NUM_LCD_DISPLAYS" -eq 1 || "$NUM_LCD_DISPLAYS" -eq 2 ]] ; then
   fi
 fi
 
-if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
   sleep "${SLOW_MOTION_MODE_TIME}"
 fi
 
@@ -494,13 +496,13 @@ while true ; do
     fi
   fi
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}"
   fi
 
   make_a_picture
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}" 
   fi
   
@@ -526,13 +528,13 @@ while true ; do
     fi
   fi
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}"
   fi
 
   detect_objects
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}" 
   fi
 
@@ -560,13 +562,13 @@ while true ; do
     fi
   fi
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}" 
   fi
 
   check_if_objects_have_been_deteted
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}" 
   fi
 
@@ -601,7 +603,7 @@ while true ; do
     fi
   fi
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}" 
   fi
 
@@ -627,7 +629,7 @@ while true ; do
     fi
   fi
 
-  if [[ "$SLOW_MOTION_MODE" -eq 1 ]] ; then
+  if [[ "$SLOW_MOTION_MODE_PARAMETER" -eq 1 ]] ; then
     sleep "${SLOW_MOTION_MODE_TIME}"
   fi
 

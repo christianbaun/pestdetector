@@ -53,7 +53,7 @@ The pest detector software is implemented as bash scripts and python scripts. Th
 
 The pest detector first checks if the required folders exist and required command-line tools like `curl` and `hostname` are present. 
 
-One or two LCD displays can be used to inform about the status of the prest detector and if objects have been detected or not. Using LCD displays can be specified by the command line argument `-d <number>`. If LCD displays shall be used, the pest detector checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
+One or two HD44780 LCD displays can be used to inform about the status of the prest detector and if objects have been detected or not. Using LCD displays can be specified by the command line argument `-d <number>`. If LCD displays shall be used, the pest detector checks if the python script `lcd_output_display1.py` is accessible when one or two LCD displays shall be used and if the script `lcd_output_display2.py` is accessible too when two LCD displays shall be used.
 
 The pest detector implements a Telegram Bot notification feature that can be used with the command line argument `-t`. It requires the variables `$TELEGRAM_TOKEN` and `$TELEGRAM_CHAT_ID` to contain the Telegram Bot url token and the chat ID and the command line tool `curl` to be present. The pest detector will check if the file `pest_detect_telegram_credentials.sh`, with contains export commands exists and execute it.
 
@@ -67,6 +67,12 @@ For handling and storing the images, the pest detector uses two directories:
 3. Check if one or more objects have been detected with the function `check_if_objects_have_been_deteted()`. This function analyzes the log file from step 2 by searching with the command line tool `grep` for lines with the search pattern `Detected`. Every detected object results in such a line. If there have been objects detected, the pest detector moves the picture and the log file of the same filename to the directory that is specified by the variable `$DIRECTORY_IMAGES` that stores the images with detected objects and the matching logfiles.
 4. If one or two LCD displays are used, the pest detector prints with the fuction `print_result_on_LCD()` information about detected objects on the LCD displays, and write some status information into the logfile with the fuction `write_detected_objects_message_into_logfile()`. In case of detected objects, a Telegram bot notification can be send out with the `function inform_telegram_bot()`. If no objects werde detected, this result is shown on the LCD displays with the fuction `print_no_object_detected_on_LCD()`.
 5. For preventing the directory that stores the images with detected objects to overflow, the pest detector checks with the function `prevent_directory_overflow()` the size of the files inside and if the size exceeds the limit, as many oldest files are erased until the limit is not exceeded anymore.
+
+## Running the pestdetector software
+
+in principle, pestdetector should run on any Raspberry Pi with the Raspberry Pi OS (previously called Raspbian). The software is developed and tested on a Rapberry Pi 4 with Raspberry Pi OS based on Debian 11 (Bullseye) and Debian 10 (Buster).
+
+![Wiring information](https://github.com/christianbaun/pestdetector/blob/main/docs/pestdetector_fritzing.png)
 
 ## Third party components
 
