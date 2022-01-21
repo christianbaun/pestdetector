@@ -70,7 +70,7 @@ For handling and storing the images, the pest detector uses two directories:
 
 ## Running the pestdetector software
 
-in principle, pestdetector should run on any Raspberry Pi with the Raspberry Pi OS (previously called Raspbian). The software is developed and tested on a Rapberry Pi 4 with Raspberry Pi OS based on Debian 11 (Bullseye) and Debian 10 (Buster).
+in principle, pestdetector should run on any Raspberry Pi with the [Raspberry Pi OS](https://www.raspberrypi.com/software/) (previously called Raspbian). The software is developed and tested on a Rapberry Pi 4 with Raspberry Pi OS based on Debian 11 (*Bullseye*) and Debian 10 (*Buster*).
 
 ![Wiring information](https://github.com/christianbaun/pestdetector/blob/main/docs/pestdetector_fritzing.png)
 
