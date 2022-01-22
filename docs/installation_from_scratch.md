@@ -51,4 +51,75 @@ Connect monitor, USB keyboard and mouse
 
 Connect a camera module (for this documentation, the Raspberry HQ Camera Module was used)
 
-Connect a sufficiently strong USB power supply to the Raspberry Pi. It will boot automatically and start the initial confiuration steps of the operating system.
+Connect a sufficiently strong USB power supply to the Raspberry Pi. It will boot automatically and start the initial confiuration steps of the operating system. These are nation, language, timezone, Wifi network credentials,...
+
+If the network configuration worked well, the operating system will start updating the packages automatically. After the system is updated, a reboot is recommended.
+
+
+## Further Configuration of the Operating System
+
+*Copy your public ssh key to the Raspberry for login without password.*
+
+Run this command from your workstation:
+
+    $ ssh-copy-id -i ~/.ssh/id_rsa.pub pi@<IP-OF-RASPBERRY-PI>
+
+*Enable VNC (on the Raspberry Pi)*
+
+    $ sudo raspi-config
+    "3 Interface Options" --> "I3 VNC" 
+
+After a reboot, the Raspberry Pi can be accessed via a VNC client (e.g. [VNC Viewer](https://www.realvnc.com/de/connect/download/viewer/)
+
+
+*Activate the Camera*
+
+With the new libcamera camera stack, the Raspberry Pi Camera modules should be detected automatically. 
+If you plan to use the legacy camera stack, it can be enabled this way:
+
+    $ sudo raspi-config
+    "3 Interface Options" --> "I1 Legacy Camera" 
+
+
+If you use the libcamera camera stack, the camera can be tested by this command:
+
+    $ libcamera-hello
+    
+    
+If you use the legacy camera stack, the camera can be tested by this command:
+
+    $ raspistill -t 0
+
+*Activate the SPI interface*
+
+If you plan using one or two LCD HD44780 LCD displays (20x4) that are connected via the SPI interface, it can be enabled via this way:
+
+    $ sudo raspi-config
+    "3 Interface Options" --> "I4 SPI" 
+
+*Install some useful packets*
+
+    $ sudo apt update
+    $ sudo apt dist-upgrade
+    $ sudo apt-get install -y joe telnet nmap htop sysbench iperf git bonnie++ iftop nload hdparm bc stress sysstat zip locate nuttcp attr imagemagick virtualenv 
+
+*Install tensorflow*
+
+    $ sudo apt install python3-pip
+    $ pip3 -V
+    pip 20.3.4 from /usr/lib/python3/dist-packages/pip (python 3.9)
+    $ sudo pip3 install --upgrade pip
+    ...
+    Successfully installed pip-21.3.1
+    $ pip3 -V
+    pip 21.3.1 from /usr/local/lib/python3.9/dist-packages/pip (python 3.9)
+
+
+    $ sudo apt-get install gfortran
+    $ sudo apt-get install libhdf5-dev libc-ares-dev libeigen3-dev
+    $ sudo apt-get install libatlas-base-dev libopenblas-dev libblas-dev
+    $ sudo apt-get install openmpi-bin libopenmpi-dev
+    $ sudo apt-get install liblapack-dev cython3
+
+*Install OpenCV*
+    $ sudo pip3 install opencv-python==3.4.17.61
