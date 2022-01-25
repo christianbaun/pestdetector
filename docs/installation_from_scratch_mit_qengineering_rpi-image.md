@@ -1,4 +1,4 @@
-# pestdetector installation from scratch with the Raspberry Pi 4 64-OS image from Qengineering (2022-01-24)
+# Pestdetector Installation from Scratch with the Raspberry Pi 4 64-OS Image from Qengineering (2022-01-24)
 
 This tutorial uses the Raspberry Pi 4 64-OS [image](https://github.com/Qengineering/RPi-image) from [Qengineering](https://github.com/Qengineering) that bases on Debian Buster. It has the relevant deep learning frameworks already installed such as:
 
