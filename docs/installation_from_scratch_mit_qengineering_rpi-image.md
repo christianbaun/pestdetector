@@ -1,6 +1,10 @@
 # pestdetector installation from scratch with the Raspberry Pi 4 64-OS image from Qengineering (2022-01-24)
 
-This tutorial uses the Raspberry Pi 4 64-OS [image](https://github.com/Qengineering/RPi-image) from [Qengineering](https://github.com/Qengineering) that bases on Debian Buster 
+This tutorial uses the Raspberry Pi 4 64-OS [image](https://github.com/Qengineering/RPi-image) from [Qengineering](https://github.com/Qengineering) that bases on Debian Buster. It has the relevant deep learning frameworks already installed such as:
+
+    OpenCV 4.5.1
+    TensorFlow-Lite 2.4.1
+    TensorFLow 2.4.1
 
 ## Download the operating system image, unzip it and copy it to the micro SD card
 
@@ -57,7 +61,24 @@ Check the system parameters.
     Linux pstdetect-02 5.10.92-v8+ #1514 SMP PREEMPT Mon Jan 17 17:39:38 GMT 2022 aarch64 GNU/Linux
     $ cat /etc/debian_version 
     10.11
-
+    $ neofetch 
+           _,met$$$$$gg.          pi@pstdetect-02 
+        ,g$$$$$$$$$$$$$$$P.       --------------- 
+      ,g$$P"     """Y$$.".        OS: Debian GNU/Linux 10 (buster) aarch64 
+     ,$$P'              `$$$.     Host: Raspberry Pi 4 Model B Rev 1.4 
+    ',$$P       ,ggs.     `$$b:   Kernel: 5.10.92-v8+ 
+    `d$$'     ,$P"'   .    $$$    Uptime: 27 mins 
+     $$P      d$'     ,    $$P    Packages: 1644 (dpkg) 
+     $$:      $$.   -    ,d$$'    Shell: bash 5.0.3 
+     $$;      Y$b._   _,d$P'      Terminal: /dev/pts/0 
+     Y$$.    `.`"Y$$$$P"'         CPU: (4) @ 1.500GHz 
+     `$$b      "-.__              Memory: 273MiB / 7633MiB 
+      `Y$$
+       `Y$$.                                              
+         `$$b.
+           `Y$$b.
+              `"Y$b._
+                  `"""
 
 ## Install some packets
 
@@ -69,7 +90,7 @@ The libcamera-tools are missing. Install them:
     
 This is a good time to install some usfull packets
 
-    $ sudo apt install -y joe telnet nmap htop sysbench iperf git
+    $ sudo apt install -y joe telnet nmap htop sysbench iperf git neofetch
     $ sudo apt install -y bonnie++ iftop nload hdparm bc stress sysstat 
     $ sudo apt install -y zip locate nuttcp attr imagemagick geeqie
 
