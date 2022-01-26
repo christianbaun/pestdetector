@@ -5,6 +5,18 @@ This tutorial uses the Raspberry Pi 4 64-OS [image](https://github.com/Qengineer
     OpenCV 4.5.1
     TensorFlow-Lite 2.4.1
     TensorFLow 2.4.1
+    
+    $ python3
+    Python 3.7.3 (default, Jan 22 2021, 20:04:44) 
+    [GCC 8.3.0] on linux
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import cv2
+    >>> cv2.__version__
+    '4.5.1'
+    >>> import tensorflow
+    >>> tensorflow.__version__
+    '2.4.1'
+    >>> 
 
 ## Download the operating system image, unzip it and copy it to the micro SD card
 
