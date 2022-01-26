@@ -160,7 +160,7 @@ After a reboot, the `libcamera`-tools should work well. e.g.
     $ git clone https://github.com/christianbaun/pestdetector.git
     $ mv model_2021_07_08_rat_bug_hedgehog/ ~
 
-## Install the Google Coral TPU Accelerator software.
+## Install the Google Coral TPU Accelerator software
 
 Install the Edge TPU runtime. The Edge TPU runtime provides the core programming interface for the Edge TPU. 
 
@@ -177,3 +177,15 @@ Now, the pestdetector can be used with the Coral TPU Accelerator USB
 
     $ ./pestdetector.sh -c 
 
+## Use the Telegram notification feature
+
+Create a file with the Telegram crecentials 
+
+$ bash -c 'cat <<EOF > ~/pest_detect_telegram_credentials.sh
+TELEGRAM_CHAT_ID="<HERE_YOUR_CHAT_ID>"
+TELEGRAM_TOKEN="<HERE_YOUR_TOKEN>"
+EOF'
+
+Now, the pestdetector can be used with the Coral TPU Accelerator USB
+
+    $ ./pestdetector.sh -t
