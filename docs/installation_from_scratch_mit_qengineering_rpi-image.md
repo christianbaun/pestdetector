@@ -181,10 +181,10 @@ Now, the pestdetector can be used with the Coral TPU Accelerator USB
 
 Create a file with the Telegram crecentials 
 
-$ bash -c 'cat <<EOF > ~/pest_detect_telegram_credentials.sh
-TELEGRAM_CHAT_ID="<HERE_YOUR_CHAT_ID>"
-TELEGRAM_TOKEN="<HERE_YOUR_TOKEN>"
-EOF'
+    $ bash -c 'cat <<EOF > ~/pest_detect_telegram_credentials.sh
+    TELEGRAM_CHAT_ID="<HERE_YOUR_CHAT_ID>"
+    TELEGRAM_TOKEN="<HERE_YOUR_TOKEN>"
+    EOF'
 
 Now, the pestdetector can be used with the Coral TPU Accelerator USB
 
