@@ -14,7 +14,7 @@ Download the operating system image from [here](https://drive.google.com/file/d/
     Archive:  RPi_64OS_DNN.zip
       inflating: RPi_64OS_DNN.img  
     
-Check carefully that you write the image to the correct micro SD card device. On my system it was '/dev/sda'. On your system it may be different.
+Check carefully that you write the image to the correct micro SD card device. On my system it was ´/dev/sda´. On your system it may be different.
 
     $ lsblk  | grep sda
     sda           8:0    1  29,8G  0 disk 
@@ -53,7 +53,7 @@ Set the hostname and the password:
 
 Next, reboot the system.
 
-Set the WiFi cretentials in the graphical X11 user interface.
+Set the WiFi cretentials (e.g. in the graphical X11 user interface).
 
 Check the system parameters.
 
@@ -98,8 +98,7 @@ Next, reboot the system.
 
 ## Fix the camera module
 
-As mentined [here](https://github.com/Qengineering/RPi-image/issues/2), no 64-bit versions of the tools `raspistill`, `raspivid`, ... for the legacy camera 
-software stack exist. But despite the fact, that the operating system image bases on Debian Buster, the libcamera stack tools like `libcamera-still`, `libcamera-vid` and `libcamera-hello` can be used.
+As mentined [here](https://github.com/Qengineering/RPi-image/issues/2) and [here](https://forums.raspberrypi.com/viewtopic.php?t=285868) and several other sources, no 64-bit versions of the tools `raspistill`, `raspivid`, ... for the legacy camera software stack exist. But despite the fact, that the operating system image bases on Debian Buster (10) and not Bullseye (11), the libcamera stack tools like `libcamera-still`, `libcamera-vid` and `libcamera-hello` can be used.
 
 If such an error message appears...
 
@@ -115,7 +114,7 @@ If such an error message appears...
     Camera closed
     ERROR: *** no cameras available ***
 
-... it is required to execfure `rpi-update`:
+... it is required to execute `rpi-update`:
 
      $ sudo rpi-update
      *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS and Dom
