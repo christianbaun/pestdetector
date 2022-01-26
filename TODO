@@ -21,6 +21,13 @@ TELEGRAM_TOKEN="<TOKEN-URL>"
 IMAGE_FILE="<IMAGE-FILE-WITH-PATH>"
 curl -s -F "chat_id=${TELEGRAM_CHAT_ID}" -F "photo=@${IMAGE_FILE}" -F caption="Detected" -X POST ${TELEGRAM_TOKEN}/sendPhoto 
 
+Create a file with the Telegram crecentials 
+
+$ bash -c 'cat <<EOF > ~/pest_detect_telegram_credentials.sh
+TELEGRAM_CHAT_ID="<HERE_YOUR_CHAT_ID>"
+TELEGRAM_TOKEN="<HERE_YOUR_TOKEN>"
+EOF'
+
 * Automatic startup at boot on the node.
 
 Create a systemd file
