@@ -47,6 +47,12 @@ This command starts the pest detector and specifies that the Telegram bot notifi
 
 ![LCD display information](https://github.com/christianbaun/pestdetector/blob/main/docs/lcd_movie.gif)
 
+## Installation
+
+The installation of pestdetector has been tested on Raspberry Pi 4 single board computers only with the [Raspberry Pi OS](https://www.raspberrypi.com/software/) (previously called Raspbian), based on Debian 10 and Debian 11, and with Tensorflow Lite and OpenCV installed.
+
+To simplify the setup of a new machine with pestdetector, a tutorial that uses the [Raspberry Pi 4 64-OS image](https://github.com/Qengineering/RPi-image) from [Qengineering](https://github.com/Qengineering) can be found [here](docs/installation_from_scratch_mit_qengineering_rpi-image.md).
+
 ## Architecture
 
 The pest detector software is implemented as bash scripts and python scripts. The main program file is `pestdetector.sh`. Several functions are outsourced to a function library which is `functionlibrary.sh`. 
