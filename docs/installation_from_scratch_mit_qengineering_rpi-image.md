@@ -63,6 +63,17 @@ Set the hostname and the password:
     1 System Options > S3 Password
     1 System Options > S4 Hostname 
 
+
+Set the HDMI configuration:
+
+    2 Display Options System Options > D1 Resolution > DMT Mode 82
+
+The HDMI configuration will ensure that X (and VNC) is startet wirhout a physical monitor attached to the single-board computer. These linkes are added by `raspi-config` into the file `/boot/config.txt`:
+
+    hdmi_force_hotplug=1
+    hdmi_group=2
+    hdmi_mode=82
+
 Next, reboot the system.
 
 Set the WiFi cretentials (e.g. in the graphical X11 user interface).
