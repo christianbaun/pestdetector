@@ -7,7 +7,7 @@ This repository contains bash scripts, python scripts, and documentation materia
 
 ## Synopsis
 
-    pestdetector.sh [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-o <time>] [-d <number>] [-c]
+    pestdetector.sh [-h] [-m <modelname>] [-l <labelmap>] [-i <directory>] [-s <size>] [-j <directory>] [-t] [-o <time>] [-d <number>] [-c] [-r]
 
     Arguments:
     -h : show this message on screen
@@ -27,6 +27,7 @@ This repository contains bash scripts, python scripts, and documentation materia
          Minimum value is 1 (= 1 second) and maximum value is 20 (= 20 seconds)
     -d : use 0, 1 or 2 LCD displays (4x20)
     -c : use Coral Accelerator TPU coprocessor 
+    -r : rotate the camera image 180 degrees
 ## Requirements
 
 These software packages must be installed:
