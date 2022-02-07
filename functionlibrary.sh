@@ -5,8 +5,8 @@
 # author:       Dr. Christian Baun
 # url:          https://github.com/christianbaun/pestdetector
 # license:      GPLv3
-# date:         January 21th 2022
-# version:      1.3
+# date:         February 7th 2022
+# version:      1.4
 # bash_version: tested with 5.1.4(1)-release
 # requires:     libcamera-still command line tool that uses the libcamera open 
 #               source camera stack. 
@@ -56,6 +56,12 @@ function make_a_picture(){
   DATE_AND_TIME_STAMP="${DATE_TIME_STAMP}-${CLOCK_TIME_STAMP}"
   IMAGE_FILENAME_AND_PATH="${DIRECTORY_MOST_RECENT_IMAGE}/${DATE_AND_TIME_STAMP}.jpg"
 
+  ROTATE_PARAMETER=""
+  if [[ ${ROTATE_CAMERA_IMAGE} -eq 1 ]]; then 
+    ROTATE_PARAMETER="--hflip --vflip"
+    echo -e "${GREEN}[OK] The camera picture will be rotated 180 degree.${NC}" | ${TEE_PROGRAM_LOG}
+  fi
+
   # Per default, we use the new libcamera tools and not the legacy raspistill tool
   # The parameters are:
   # -n = no preview window
@@ -63,14 +69,14 @@ function make_a_picture(){
 
   # If libcamera-still is present and working, we will use it...
   if [[ ${TRY_LEGACY_RASPISTILL} -eq 0 ]]; then 
-    if libcamera-still -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/libcamera-still_output ; then
+    if libcamera-still -n ${ROTATE_PARAMETER} -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/libcamera-still_output ; then
       echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with libcamera-still.${NC}" | ${TEE_PROGRAM_LOG}
     else
       echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with libcamera-still.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
     fi 
   # If libcamera-still is not present and working, we will try using raspistill instead...
   else
-    if raspistill -n -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/raspistill_output ; then
+    if raspistill -n ${ROTATE_PARAMETER} -t 1 -o ${IMAGE_FILENAME_AND_PATH} &> /dev/shm/raspistill_output ; then
       echo -e "${GREEN}[OK] The picture ${IMAGE_FILENAME_AND_PATH} has been created with raspistill.${NC}" | ${TEE_PROGRAM_LOG}
     else
       echo -e "${RED}[ERROR] Unable to create the picture ${IMAGE_FILENAME_AND_PATH} with raspistill.${NC}" | ${TEE_PROGRAM_LOG} && exit 1
