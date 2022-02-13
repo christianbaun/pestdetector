@@ -84,6 +84,14 @@ $ sudo nano /lib/systemd/system/pestdetect.service
 the pestdetector deamon need to be restartet:
 $ sudo systemctl restart pestdetect.service
 
+Check log:
+$ journalctl -u pestdetect.service 
+Send the logs to standard output and avoid paging them:
+$ journalctl -u pestdetect.service --no-pager
+Follow log:
+$ journalctl -u pestdetect.service -f
+
+
 
 The second option is just inserting a line into the file /etc/rc.local
 
