@@ -81,8 +81,8 @@ pestdetect.service                                          loaded active runnin
 
 When the systemd service file is changed...
 $ sudo nano /lib/systemd/system/pestdetect.service
-the deamon need to be reloaded:
-$ sudo systemctl daemon-reload
+the pestdetector deamon need to be restartet:
+$ sudo systemctl restart pestdetect.service
 
 
 The second option is just inserting a line into the file /etc/rc.local
